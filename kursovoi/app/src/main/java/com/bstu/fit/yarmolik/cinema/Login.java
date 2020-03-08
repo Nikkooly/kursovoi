@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class Login extends AppCompatActivity {
@@ -36,20 +37,20 @@ public class Login extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
         initViews();
-        new CountDownTimer(5000, 1000) {
+        new CountDownTimer(3000, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                bookITextView.setVisibility(View.GONE);
-                loadingProgressBar.setVisibility(View.GONE);
-                rootView.setBackgroundColor(ContextCompat.getColor(Login.this, R.color.colorSplashText));
+                bookITextView.setVisibility(VISIBLE);
+                rootView.setBackgroundColor(ContextCompat.getColor(Login.this, R.color.colorBackground));
                 bookIconImageView.setImageResource(R.drawable.app_icon);
-                startAnimation();
             }
 
             @Override
             public void onFinish() {
-
+                bookITextView.setVisibility(GONE);
+                rootView.setBackgroundColor(ContextCompat.getColor(Login.this, R.color.btnColor));
+                startAnimation();
             }
         }.start();
     }
@@ -61,7 +62,6 @@ public class Login extends AppCompatActivity {
     private void initViews() {
         bookIconImageView = findViewById(R.id.bookIconImageView);
         bookITextView = findViewById(R.id.bookITextView);
-        loadingProgressBar = findViewById(R.id.loadingProgressBar);
         rootView = findViewById(R.id.rootView);
         afterAnimationView = findViewById(R.id.afterAnimationView);
     }
@@ -74,7 +74,6 @@ public class Login extends AppCompatActivity {
         viewPropertyAnimator.setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
             }
 
             @Override
