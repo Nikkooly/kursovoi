@@ -1,4 +1,4 @@
-package bstu.fit.kursovoi.cinema;
+package com.bstu.fit.yarmolik.cinema;
 
 import org.junit.Test;
 

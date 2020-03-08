@@ -1,4 +1,4 @@
-package bstu.fit.kursovoi.cinema;
+package com.bstu.fit.yarmolik.cinema;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("bstu.fit.kursovoi.cinema", appContext.getPackageName());
+        assertEquals("com.bstu.fit.yarmolik.cinema", appContext.getPackageName());
     }
 }
