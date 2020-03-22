@@ -58,6 +58,10 @@ public class Login extends AppCompatActivity {
         Intent intent=new Intent(this,MainActivity.class);
         startActivity(intent);
     }
+    public void SignUp(View view){
+        Intent intent=new Intent(this,Registration.class);
+        startActivity(intent);
+    }
 
     private void initViews() {
         bookIconImageView = findViewById(R.id.bookIconImageView);

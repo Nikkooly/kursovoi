@@ -3,21 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/bottombaritem_calls"
-        android:icon="@android:drawable/ic_media_next"
-        android:title="Calls"
+        android:id="@+id/bottombaritem_popular"
+        android:icon="@drawable/ic_star"
+        android:title="Популярное"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/bottombaritem_recents"
-        android:icon="@android:drawable/ic_media_next"
-        android:title="Recents"
+        android:id="@+id/bottombaritem_films"
+        android:icon="@drawable/ic_films"
+        android:title="Фильмы"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/bottombaritem_trips"
-        android:icon="@android:drawable/ic_media_next"
-        android:title="Trips"
+        android:id="@+id/bottombaritem_cinemas"
+        android:icon="@drawable/ic_cinema"
+        android:title="Кинотеатры"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/bottombaritem_tickets"
+        android:icon="@drawable/ic_tab_tickets"
+        android:title="Билеты"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/bottombaritem_more"
+        android:icon="@drawable/ic_tab_categories"
+        android:title="Еще"
         app:showAsAction="ifRoom"/>
 
 </menu>

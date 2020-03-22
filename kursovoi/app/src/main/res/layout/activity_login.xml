@@ -88,13 +88,17 @@
                 android:layout_marginTop="10dp"
                 android:padding="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sign_up"
-                    android:textColor="@color/colorTextView"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                <Button
+                    android:id="@+id/signUp"
+                    android:layout_width="70dp"
+                    android:layout_height="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/button_drawable"
+                    android:text="Sign up"
+                    android:onClick="SignUp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/btnColor"
+                    android:textSize="16sp" />
 
 
                 <TextView
