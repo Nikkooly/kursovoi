@@ -1,12 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentMore">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    android:layout_marginBottom="57dp"
+    android:background="#FFFFFF"
+    tools:context=".Fragments.FragmentMore">
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/IconImageView"
+        android:layout_width="69dp"
+        android:layout_height="59dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="4dp"
+        android:src="@raw/icon_more"
+        app:layout_constraintEnd_toStartOf="@+id/textForOne"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textForOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/IconImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="94dp"
+        android:text="Magnifisent"
+        android:textColor="@color/textColorFragment"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/IconImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="123dp"
+        android:text="СЕТЬ КИНОТЕАТРОВ"
+        android:textColor="@color/textColorFragment"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textForOne" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="120dp"
+        android:text="Приобритение и возврат билетов"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IconImageView" />
+
+    <View
+        android:layout_width="272dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="65dp"
+        android:background="@drawable/separator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <ListView
+        android:id="@+id/constant_values"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_weight="0.5"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="166dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

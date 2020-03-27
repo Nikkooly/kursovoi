@@ -1,23 +1,25 @@
-package com.bstu.fit.yarmolik.cinema;
+package com.bstu.fit.yarmolik.cinema.Fragments;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+
+import com.bstu.fit.yarmolik.cinema.R;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class SliderFragment extends Fragment {
     private static ViewPager mPager;
@@ -33,7 +35,6 @@ public class SliderFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_slider, container, false);
         mPager =view.findViewById(R.id.pager);
-
         for(int i=0;i<IMAGES.length;i++)
                 ImagesArray.add(IMAGES[i]);
             for(int j=0;j<DESCRIPTION.length;j++)

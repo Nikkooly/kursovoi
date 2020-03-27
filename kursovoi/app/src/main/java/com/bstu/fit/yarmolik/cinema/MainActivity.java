@@ -1,30 +1,25 @@
 package com.bstu.fit.yarmolik.cinema;
 
-import android.content.Context;
-import android.graphics.Color;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.smarteist.autoimageslider.IndicatorAnimations;
-import com.smarteist.autoimageslider.SliderAnimations;
-import com.smarteist.autoimageslider.SliderView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.bstu.fit.yarmolik.cinema.Fragments.CinemaFragment;
+import com.bstu.fit.yarmolik.cinema.Fragments.FilmFragment;
+import com.bstu.fit.yarmolik.cinema.Fragments.FragmentMore;
+import com.bstu.fit.yarmolik.cinema.Fragments.SliderFragment;
+import com.bstu.fit.yarmolik.cinema.Fragments.TicketFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity  {
 SliderFragment sliderFragment;
+    private Toolbar toolbar;
     Fragment currentFragment = null;
     FragmentTransaction ft;
     private BottomNavigationView bottomNavigationView;
@@ -50,12 +45,25 @@ SliderFragment sliderFragment;
                                 ft.commit();
                                 return true;
                             case R.id.bottombaritem_films:
+                                currentFragment = new FilmFragment();
+                                ft = getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.container, currentFragment);
+                                ft.addToBackStack(null);
+                                ft.commit();
                                 return true;
                             case R.id.bottombaritem_cinemas:
-                                // TODO
+                                currentFragment = new CinemaFragment();
+                                ft = getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.container, currentFragment);
+                                ft.addToBackStack(null);
+                                ft.commit();
                                 return true;
                             case R.id.bottombaritem_tickets:
-                                // TODO
+                                currentFragment = new TicketFragment();
+                                ft = getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.container, currentFragment);
+                                ft.addToBackStack(null);
+                                ft.commit();
                                 return true;
                             case R.id.bottombaritem_more:
                                 currentFragment = new FragmentMore();

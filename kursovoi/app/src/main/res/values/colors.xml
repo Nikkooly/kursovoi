@@ -8,5 +8,7 @@
     <color name="colorProgressBar">#FFCE511C</color>
     <color name="colorTextView">#83898E</color>
     <color name="btnColor">#FFFFFF</color>
+    <color name="toolBarTicket">#FFFFFF</color>
     <color name="menuDownColor">#FFFFFF</color>
+    <color name="textColorFragment">#000000</color>
 </resources>

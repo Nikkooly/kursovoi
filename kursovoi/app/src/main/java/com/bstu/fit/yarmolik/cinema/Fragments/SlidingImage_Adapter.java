@@ -1,4 +1,4 @@
-package com.bstu.fit.yarmolik.cinema;
+package com.bstu.fit.yarmolik.cinema.Fragments;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.bstu.fit.yarmolik.cinema.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
