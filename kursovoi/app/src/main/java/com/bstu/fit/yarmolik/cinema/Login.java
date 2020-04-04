@@ -1,6 +1,7 @@
 package com.bstu.fit.yarmolik.cinema;
 
 import android.animation.Animator;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -17,6 +20,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bstu.fit.yarmolik.cinema.Model.UserData;
+import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
+
+import dmax.dialog.SpotsDialog;
+import io.reactivex.disposables.CompositeDisposable;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -24,13 +33,16 @@ public class Login extends AppCompatActivity {
 
     private ImageView bookIconImageView;
     private TextView bookITextView;
+    private EditText login,password;
+    Button btn_login;
     private ProgressBar loadingProgressBar;
     private RelativeLayout rootView, afterAnimationView;
+    IMyApi iMyApi;
+    CompositeDisposable compositeDisposable=new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -53,6 +65,16 @@ public class Login extends AppCompatActivity {
                 startAnimation();
             }
         }.start();
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog=new SpotsDialog.Builder()
+                        .setContext(Login.this)
+                        .build();
+                alertDialog.show();
+                UserData userData = new UserData();
+            }
+        });
     }
     public void Skip(View view){
         Intent intent=new Intent(this,MainActivity.class);
@@ -68,6 +90,9 @@ public class Login extends AppCompatActivity {
         bookITextView = findViewById(R.id.bookITextView);
         rootView = findViewById(R.id.rootView);
         afterAnimationView = findViewById(R.id.afterAnimationView);
+        login=findViewById(R.id.loginEditText);
+        password=findViewById(R.id.passwordEditText);
+        btn_login=findViewById(R.id.signUp);
     }
 
     private void startAnimation() {
@@ -95,5 +120,11 @@ public class Login extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        compositeDisposable.clear();
+        super.onStop();
     }
 }
