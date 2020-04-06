@@ -15,16 +15,22 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
 import com.bstu.fit.yarmolik.cinema.Model.UserData;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
+import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
 
 import dmax.dialog.SpotsDialog;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -35,14 +41,18 @@ public class Login extends AppCompatActivity {
     private TextView bookITextView;
     private EditText login,password;
     Button btn_login;
+    String response="";
     private ProgressBar loadingProgressBar;
     private RelativeLayout rootView, afterAnimationView;
     IMyApi iMyApi;
-    CompositeDisposable compositeDisposable=new CompositeDisposable();
+    Intent intent;
+    CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        compositeDisposable=new CompositeDisposable();
+        iMyApi= RetrofitClient.getInstance().create(IMyApi.class);
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -68,16 +78,41 @@ public class Login extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog alertDialog=new SpotsDialog.Builder()
-                        .setContext(Login.this)
-                        .build();
-                alertDialog.show();
-                UserData userData = new UserData();
+                String loginValue = login.getText().toString();
+                String passwordValue = password.getText().toString();
+                boolean checkLogin = loginValue.matches("^[a-zA-Z][a-zA-Z0-9-_\\.]{1,20}$");
+                boolean checkPassword = passwordValue.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$");
+                if (checkPassword == true && checkLogin == true) {
+                    AlertDialog alertDialog = new SpotsDialog.Builder()
+                            .setContext(Login.this)
+                            .build();
+                    alertDialog.show();
+                    LoginUser user = new LoginUser(login.getText().toString(), password.getText().toString());
+                    compositeDisposable.add(iMyApi.loginUser(user)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(s -> {
+                                alertDialog.dismiss();
+                                Toast.makeText(Login.this, s, Toast.LENGTH_SHORT).show();
+                                response = s;
+                                if(response.toLowerCase().contains("id"))
+                                {
+                                    intent=new Intent(Login.this,MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            }, throwable -> {
+                                alertDialog.dismiss();
+                                Toast.makeText(Login.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            })
+                    );
+                } else {
+                    Toast.makeText(Login.this, "Некорректные данные", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
     public void Skip(View view){
-        Intent intent=new Intent(this,MainActivity.class);
+        intent=new Intent(Login.this,MainActivity.class);
         startActivity(intent);
     }
     public void SignUp(View view){
@@ -92,7 +127,7 @@ public class Login extends AppCompatActivity {
         afterAnimationView = findViewById(R.id.afterAnimationView);
         login=findViewById(R.id.loginEditText);
         password=findViewById(R.id.passwordEditText);
-        btn_login=findViewById(R.id.signUp);
+        btn_login=findViewById(R.id.loginButton);
     }
 
     private void startAnimation() {

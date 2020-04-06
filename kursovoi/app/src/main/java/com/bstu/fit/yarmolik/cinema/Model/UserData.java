@@ -1,8 +1,6 @@
 package com.bstu.fit.yarmolik.cinema.Model;
 
 public class UserData {
-    public String Name;
-    public String Surname;
     public String Login;
     public String Email;
     public String Password;
@@ -10,29 +8,11 @@ public class UserData {
     public UserData(){
 
     }
-    public UserData(String name,String surname,String login, String email, String password, int roleId){
-        Name=name;
-        Surname=surname;
+    public UserData(String login, String email, String password, int roleId){
         Login=login;
         Email=email;
         Password=password;
         RoleId=roleId;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        Name = name;
-    }
-
-    public String getSurname() {
-        return Surname;
-    }
-
-    public void setSurname(String surname) {
-        Surname = surname;
     }
 
     public String getLogin() {
