@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bstu.fit.yarmolik.cinema.R;
+import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 
 public class SliderFragment extends Fragment {
     private static ViewPager mPager;
+    FilmResponse filmResponse;
     private static int currentPage = 0;
     Context context;
     private static int NUM_PAGES = 0;

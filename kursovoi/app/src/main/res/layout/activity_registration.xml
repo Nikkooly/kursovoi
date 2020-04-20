@@ -26,7 +26,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_marginTop="50dp"
-        android:layout_height="400dp"
+        android:layout_height="360dp"
         android:id="@+id/LinearRegistration"
         android:layout_below="@+id/textForOne"
         android:orientation="vertical">

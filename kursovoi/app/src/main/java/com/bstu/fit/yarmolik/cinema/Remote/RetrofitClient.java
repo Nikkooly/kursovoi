@@ -1,6 +1,8 @@
 package com.bstu.fit.yarmolik.cinema.Remote;
 
 import io.reactivex.plugins.RxJavaPlugins;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -10,9 +12,14 @@ public class RetrofitClient {
     private static Retrofit instance;
 
     public static Retrofit getInstance() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
         if(instance==null)
             instance=new Retrofit.Builder()
                     .baseUrl("http://10.0.2.2:5000/")
+                    //.baseUrl(" http://1454c473.ngrok.io/")
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

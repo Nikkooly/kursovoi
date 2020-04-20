@@ -17,20 +17,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bstu.fit.yarmolik.cinema.Manager.ManagerActivity;
 import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
-import com.bstu.fit.yarmolik.cinema.Model.UserData;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
+import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
+
+import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -41,6 +45,7 @@ public class Login extends AppCompatActivity {
     private TextView bookITextView;
     private EditText login,password;
     Button btn_login;
+    List<FilmResponse> posts;
     String response="";
     private ProgressBar loadingProgressBar;
     private RelativeLayout rootView, afterAnimationView;
@@ -93,12 +98,18 @@ public class Login extends AppCompatActivity {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(s -> {
                                 alertDialog.dismiss();
-                                Toast.makeText(Login.this, s, Toast.LENGTH_SHORT).show();
-                                response = s;
-                                if(response.toLowerCase().contains("id"))
+                                Toast.makeText(Login.this, s, Toast.LENGTH_LONG).show();
+                                Integer equal=1;
+                                Integer secondequal=2;
+                                if(s.toLowerCase().contains(equal.toString()))
                                 {
+                                    Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
                                     intent=new Intent(Login.this,MainActivity.class);
                                     startActivity(intent);
+                                }
+                                else if(s.toLowerCase().contains(secondequal.toString())){
+                                    intent=new Intent(Login.this, ManagerActivity.class);
+                                     startActivity(intent);
                                 }
                             }, throwable -> {
                                 alertDialog.dismiss();
@@ -153,6 +164,27 @@ public class Login extends AppCompatActivity {
             @Override
             public void onAnimationRepeat(Animator animation) {
 
+            }
+        });
+    }
+    private void loadFilms(){
+        Call<List<FilmResponse>> call=iMyApi.getFilms();
+        call.enqueue(new Callback<List<FilmResponse>>() {
+            @Override
+            public void onResponse(Call<List<FilmResponse>> call, Response<List<FilmResponse>> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(Login.this, response.code(), Toast.LENGTH_LONG).show();
+                }
+                posts=response.body();
+               /* for(FilmResponse post : posts){
+                    //List<String> names;
+                    String name = "";
+                    name +=post.getName()+"\n";
+                }*/
+            }
+            @Override
+            public void onFailure(Call<List<FilmResponse>> call, Throwable t) {
+                Toast.makeText(Login.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
