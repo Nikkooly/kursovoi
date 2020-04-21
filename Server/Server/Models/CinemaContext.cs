@@ -17,7 +17,6 @@ namespace Server.Models
 
         public virtual DbSet<CinemaInfo> CinemaInfo { get; set; }
         public virtual DbSet<FilmInfo> FilmInfo { get; set; }
-        public virtual DbSet<GenreOfFilm> GenreOfFilm { get; set; }
         public virtual DbSet<HallInfo> HallInfo { get; set; }
         public virtual DbSet<PlacePrice> PlacePrice { get; set; }
         public virtual DbSet<Places> Places { get; set; }
@@ -32,6 +31,7 @@ namespace Server.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-15P21ID;Initial Catalog=Cinema;user=Nikkooly;password=1063Nick;");
             }
         }
@@ -69,41 +69,21 @@ namespace Server.Models
                     .HasColumnName("description")
                     .HasColumnType("text");
 
-                entity.Property(e => e.Duration)
-                    .HasColumnName("duration")
-                    .HasMaxLength(10);
+                entity.Property(e => e.Duration).HasColumnName("duration");
 
-                entity.Property(e => e.GenreId).HasColumnName("genre_id");
+                entity.Property(e => e.Genre)
+                    .IsRequired()
+                    .HasColumnName("genre")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Poster)
-                    .IsRequired()
-                    .HasColumnName("poster")
-                    .HasColumnType("image");
+                entity.Property(e => e.Poster).HasColumnName("poster");
 
                 entity.Property(e => e.Year).HasColumnName("year");
-
-                entity.HasOne(d => d.Genre)
-                    .WithMany(p => p.FilmInfo)
-                    .HasForeignKey(d => d.GenreId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__filmInfo__genre___1BFD2C07");
-            });
-
-            modelBuilder.Entity<GenreOfFilm>(entity =>
-            {
-                entity.ToTable("genreOfFilm");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Genre)
-                    .IsRequired()
-                    .HasColumnName("genre")
-                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<HallInfo>(entity =>
@@ -124,7 +104,7 @@ namespace Server.Models
                 entity.HasOne(d => d.Cinema)
                     .WithMany(p => p.HallInfo)
                     .HasForeignKey(d => d.CinemaId)
-                    .HasConstraintName("FK__hallInfo__cinema__1920BF5C");
+                    .HasConstraintName("FK__hallInfo__cinema__173876EA");
             });
 
             modelBuilder.Entity<PlacePrice>(entity =>
@@ -142,12 +122,12 @@ namespace Server.Models
                 entity.HasOne(d => d.PlaceNavigation)
                     .WithMany(p => p.PlacePrice)
                     .HasForeignKey(d => d.Place)
-                    .HasConstraintName("FK__PlacePric__place__2B3F6F97");
+                    .HasConstraintName("FK__PlacePric__place__286302EC");
 
                 entity.HasOne(d => d.Seance)
                     .WithMany(p => p.PlacePrice)
                     .HasForeignKey(d => d.SeanceId)
-                    .HasConstraintName("FK__PlacePric__seanc__2C3393D0");
+                    .HasConstraintName("FK__PlacePric__seanc__29572725");
             });
 
             modelBuilder.Entity<Places>(entity =>
@@ -163,12 +143,12 @@ namespace Server.Models
                 entity.HasOne(d => d.Hall)
                     .WithMany(p => p.PlacesNavigation)
                     .HasForeignKey(d => d.HallId)
-                    .HasConstraintName("FK__Places__hall_id__276EDEB3");
+                    .HasConstraintName("FK__Places__hall_id__24927208");
 
                 entity.HasOne(d => d.TypeNavigation)
                     .WithMany(p => p.Places)
                     .HasForeignKey(d => d.Type)
-                    .HasConstraintName("FK__Places__type__286302EC");
+                    .HasConstraintName("FK__Places__type__25869641");
             });
 
             modelBuilder.Entity<Rating>(entity =>
@@ -185,7 +165,7 @@ namespace Server.Models
                     .WithMany(p => p.Rating)
                     .HasForeignKey(d => d.FilmId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__rating__film_id__1ED998B2");
+                    .HasConstraintName("FK__rating__film_id__1BFD2C07");
             });
 
             modelBuilder.Entity<Roles>(entity =>
@@ -220,13 +200,13 @@ namespace Server.Models
                     .WithMany(p => p.Seance)
                     .HasForeignKey(d => d.FilmId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__seance__film_id__22AA2996");
+                    .HasConstraintName("FK__seance__film_id__1FCDBCEB");
 
                 entity.HasOne(d => d.Hall)
                     .WithMany(p => p.Seance)
                     .HasForeignKey(d => d.HallId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__seance__hall_id__21B6055D");
+                    .HasConstraintName("FK__seance__hall_id__1ED998B2");
             });
 
             modelBuilder.Entity<Ticket>(entity =>
@@ -242,12 +222,12 @@ namespace Server.Models
                 entity.HasOne(d => d.PlacePriceNavigation)
                     .WithMany(p => p.Ticket)
                     .HasForeignKey(d => d.PlacePrice)
-                    .HasConstraintName("FK__ticket__place_pr__300424B4");
+                    .HasConstraintName("FK__ticket__place_pr__2D27B809");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Ticket)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__ticket__user_id__2F10007B");
+                    .HasConstraintName("FK__ticket__user_id__2C3393D0");
             });
 
             modelBuilder.Entity<Type>(entity =>
@@ -276,14 +256,12 @@ namespace Server.Models
                     .HasColumnName("login")
                     .HasMaxLength(50);
 
-
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasColumnName("password")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
-
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.UserData)

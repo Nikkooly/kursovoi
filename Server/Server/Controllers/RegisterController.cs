@@ -18,7 +18,6 @@ namespace Server.Controllers
         [HttpPost]
         public string Post([FromBody]UserData value)
         {
-            var temp = cinemaContext.UserData.ToList();
             if (!cinemaContext.UserData.Any(user => user.Login.Equals(value.Login)))
             {
                 UserData user = new UserData();  

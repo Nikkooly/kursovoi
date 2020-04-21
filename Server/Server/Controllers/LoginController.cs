@@ -29,7 +29,7 @@ namespace Server.Controllers
                     var login = value.Login;
                     if (login.Equals(userData.Login) && password.Equals(userData.Password))
                     {
-                        return JsonConvert.SerializeObject(userData);
+                        return JsonConvert.SerializeObject(userData.RoleId);
                     }
                     else
                     {
