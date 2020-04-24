@@ -40,7 +40,7 @@ namespace Server.Models
         {
             modelBuilder.Entity<CinemaInfo>(entity =>
             {
-                entity.ToTable("cinemaInfo");
+                entity.ToTable("cinema_info");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -57,7 +57,7 @@ namespace Server.Models
 
             modelBuilder.Entity<FilmInfo>(entity =>
             {
-                entity.ToTable("filmInfo");
+                entity.ToTable("film_info");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -81,22 +81,24 @@ namespace Server.Models
                     .HasColumnName("name")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Poster).HasColumnName("poster");
+                entity.Property(e => e.Poster)
+                    .IsRequired()
+                    .HasColumnName("poster");
 
                 entity.Property(e => e.Year).HasColumnName("year");
             });
 
             modelBuilder.Entity<HallInfo>(entity =>
             {
-                entity.ToTable("hallInfo");
+                entity.ToTable("hall_info");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CinemaId).HasColumnName("cinema_id");
 
-                entity.Property(e => e.Hall)
+                entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasColumnName("hall")
+                    .HasColumnName("name")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Places).HasColumnName("places");
@@ -104,14 +106,16 @@ namespace Server.Models
                 entity.HasOne(d => d.Cinema)
                     .WithMany(p => p.HallInfo)
                     .HasForeignKey(d => d.CinemaId)
-                    .HasConstraintName("FK__hallInfo__cinema__173876EA");
+                    .HasConstraintName("Fk_HallInfo_Cascade");
             });
 
             modelBuilder.Entity<PlacePrice>(entity =>
             {
+                entity.ToTable("place_price");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Place).HasColumnName("place");
+                entity.Property(e => e.PlaceId).HasColumnName("place_id");
 
                 entity.Property(e => e.Price).HasColumnName("price");
 
@@ -119,36 +123,38 @@ namespace Server.Models
 
                 entity.Property(e => e.Status).HasColumnName("status");
 
-                entity.HasOne(d => d.PlaceNavigation)
+                entity.HasOne(d => d.Place)
                     .WithMany(p => p.PlacePrice)
-                    .HasForeignKey(d => d.Place)
-                    .HasConstraintName("FK__PlacePric__place__286302EC");
+                    .HasForeignKey(d => d.PlaceId)
+                    .HasConstraintName("Fk_Place_price_places_Cascade");
 
                 entity.HasOne(d => d.Seance)
                     .WithMany(p => p.PlacePrice)
                     .HasForeignKey(d => d.SeanceId)
-                    .HasConstraintName("FK__PlacePric__seanc__29572725");
+                    .HasConstraintName("Fk_Place_price_seance_id_Cascade");
             });
 
             modelBuilder.Entity<Places>(entity =>
             {
+                entity.ToTable("places");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.HallId).HasColumnName("hall_id");
 
                 entity.Property(e => e.Place).HasColumnName("place");
 
-                entity.Property(e => e.Type).HasColumnName("type");
+                entity.Property(e => e.TypeId).HasColumnName("type_id");
 
                 entity.HasOne(d => d.Hall)
                     .WithMany(p => p.PlacesNavigation)
                     .HasForeignKey(d => d.HallId)
-                    .HasConstraintName("FK__Places__hall_id__24927208");
+                    .HasConstraintName("Fk_Places_hall_id__Cascade");
 
-                entity.HasOne(d => d.TypeNavigation)
+                entity.HasOne(d => d.Type)
                     .WithMany(p => p.Places)
-                    .HasForeignKey(d => d.Type)
-                    .HasConstraintName("FK__Places__type__25869641");
+                    .HasForeignKey(d => d.TypeId)
+                    .HasConstraintName("Fk_Places_Type__Cascade");
             });
 
             modelBuilder.Entity<Rating>(entity =>
@@ -164,8 +170,7 @@ namespace Server.Models
                 entity.HasOne(d => d.Film)
                     .WithMany(p => p.Rating)
                     .HasForeignKey(d => d.FilmId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__rating__film_id__1BFD2C07");
+                    .HasConstraintName("Fk_Rating_Film_id__Cascade");
             });
 
             modelBuilder.Entity<Roles>(entity =>
@@ -199,14 +204,13 @@ namespace Server.Models
                 entity.HasOne(d => d.Film)
                     .WithMany(p => p.Seance)
                     .HasForeignKey(d => d.FilmId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__seance__film_id__1FCDBCEB");
+                    .HasConstraintName("Fk_Seance_Film_id__Cascade");
 
                 entity.HasOne(d => d.Hall)
                     .WithMany(p => p.Seance)
                     .HasForeignKey(d => d.HallId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__seance__hall_id__1ED998B2");
+                    .HasConstraintName("Fk_Seance_Hall_id__Cascade");
             });
 
             modelBuilder.Entity<Ticket>(entity =>
@@ -215,23 +219,25 @@ namespace Server.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.PlacePrice).HasColumnName("place_price");
+                entity.Property(e => e.PriceId).HasColumnName("price_id");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
-                entity.HasOne(d => d.PlacePriceNavigation)
+                entity.HasOne(d => d.Price)
                     .WithMany(p => p.Ticket)
-                    .HasForeignKey(d => d.PlacePrice)
-                    .HasConstraintName("FK__ticket__place_pr__2D27B809");
+                    .HasForeignKey(d => d.PriceId)
+                    .HasConstraintName("Fk_Ticket_Place_price_Cascade");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Ticket)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__ticket__user_id__2C3393D0");
+                    .HasConstraintName("Fk_Ticket_id_user_Cascade");
             });
 
             modelBuilder.Entity<Type>(entity =>
             {
+                entity.ToTable("type");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Type1)
@@ -242,7 +248,7 @@ namespace Server.Models
 
             modelBuilder.Entity<UserData>(entity =>
             {
-                entity.ToTable("userData");
+                entity.ToTable("user_data");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -266,7 +272,7 @@ namespace Server.Models
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.UserData)
                     .HasForeignKey(d => d.RoleId)
-                    .HasConstraintName("FK__userData__role_i__145C0A3F");
+                    .HasConstraintName("FK__user_data__role___145C0A3F");
             });
 
             OnModelCreatingPartial(modelBuilder);

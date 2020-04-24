@@ -12,8 +12,8 @@ namespace Server.Models
         }
 
         public int Id { get; set; }
-        public int? CinemaId { get; set; }
-        public string Hall { get; set; }
+        public int CinemaId { get; set; }
+        public string Name { get; set; }
         public int Places { get; set; }
 
         public virtual CinemaInfo Cinema { get; set; }

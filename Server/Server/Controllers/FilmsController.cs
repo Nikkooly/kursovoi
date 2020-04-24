@@ -53,7 +53,7 @@ namespace Server.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public String Post([FromBody]FilmInfo value)
+        public string Post([FromBody]FilmInfo value)
         {
             if (!cinemaContext.FilmInfo.Any(film => film.Name.Equals(value.Name)))
             {
