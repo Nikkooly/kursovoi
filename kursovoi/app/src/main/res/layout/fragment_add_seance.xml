@@ -8,49 +8,140 @@
     android:background="@color/toolBarTicket"
     android:layout_marginTop="57dp"
     tools:context=".Manager.AddSeanceFragment">
+
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="101dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="17dp"
         android:layout_marginEnd="101dp"
-        android:text="Выберите фильм"
+        android:text="Выберите кинотеатр"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.jaredrummler.materialspinner.MaterialSpinner
-        android:id="@+id/spinnerDelete"
+        android:id="@+id/spinnerSelectCinemaOfSeance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="17dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView11"
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="101dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="17dp"
         android:layout_marginEnd="101dp"
-        android:text="Выберите дату"
+        android:text="Выберите зал"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerDelete" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSelectCinemaOfSeance" />
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/spinnerSelectHallOfSeance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView12"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="101dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="101dp"
+        android:text="Выберите фильм"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSelectHallOfSeance" />
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/spinnerSelectFilmOfSeance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView13"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="101dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="101dp"
+        android:text="Выберите время сеанса"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.729"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateButton" />
 
     <Button
         android:id="@+id/dateButton"
         android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/colorAccent"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="Выберите дату"
+        android:textColor="@color/toolBarTicket"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSelectFilmOfSeance" />
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/spinnerSelectTimeOfSeance"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Изменить дату"
-        android:layout_marginTop="10dp"
-        android:onClick="setDate"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView14"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/addSeance"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/colorBackground"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="Добавить сеанс"
+        android:textColor="@color/toolBarTicket"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSelectTimeOfSeance" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

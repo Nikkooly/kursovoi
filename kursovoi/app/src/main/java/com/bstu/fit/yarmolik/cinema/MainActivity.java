@@ -23,27 +23,43 @@ import com.bstu.fit.yarmolik.cinema.Manager.ManagerActivity;
 import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
+import com.bstu.fit.yarmolik.cinema.Responces.CinemaResponce;
+import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.jaredrummler.materialspinner.MaterialSpinner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity  {
 SliderFragment sliderFragment;
     private Toolbar toolbar;
     Fragment currentFragment = null;
     FragmentTransaction ft;
-    IMyApi iMyApi;
+    public IMyApi iMyApi;
+    public List<FilmResponse> film;
+    public ArrayList<String> nameList,countryList,descriptionList,posterList,genreList;
+    public ArrayList<Integer> idList,durationList,yearList;
     CompositeDisposable compositeDisposable;
     private BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ft = getSupportFragmentManager().beginTransaction();
+
+        init();
         iMyApi= RetrofitClient.getInstance().create(IMyApi.class);
+        getFilms();
+        //Toast.makeText(this,nameList.get(0),Toast.LENGTH_SHORT).show();
+        ft = getSupportFragmentManager().beginTransaction();
         currentFragment = new SliderFragment();
         ft.replace(R.id.container, currentFragment);
         ft.commit();
@@ -93,34 +109,40 @@ SliderFragment sliderFragment;
                 });
     }
     public void getFilms(){
-        AlertDialog alertDialog = new SpotsDialog.Builder()
-                .setContext(MainActivity.this)
-                .build();
-        alertDialog.show();
-        Toast.makeText(MainActivity.this,  iMyApi.getFilms().toString(), Toast.LENGTH_LONG).show();
-
-       /* compositeDisposable.add(iMyApi.getFilms()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> {
-                    alertDialog.dismiss();
-                    Toast.makeText(Login.this, s, Toast.LENGTH_LONG).show();
-                    Integer equal=1;
-                    Integer secondequal=2;
-                    if(s.toLowerCase().contains(equal.toString()))
-                    {
-                        Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
-                        intent=new Intent(Login.this,MainActivity.class);
-                        startActivity(intent);
-                    }
-                    else if(s.toLowerCase().contains(secondequal.toString())){
-                        intent=new Intent(Login.this, ManagerActivity.class);
-                        startActivity(intent);
-                    }
-                }, throwable -> {
-                    alertDialog.dismiss();
-                    Toast.makeText(Login.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                })
-        );*/
-    }
+        Call<List<FilmResponse>> call=iMyApi.getFilms();
+        call.enqueue(new Callback<List<FilmResponse>>() {
+            @Override
+            public void onResponse(Call<List<FilmResponse>> call, Response<List<FilmResponse>> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(MainActivity.this, response.code(), Toast.LENGTH_LONG).show();
+                }
+                Toast.makeText(MainActivity.this, response.code(), Toast.LENGTH_LONG).show();
+                film=response.body();
+                for(FilmResponse post : film){
+                    nameList.add(post.getName());
+                    idList.add(post.getId());
+                    countryList.add(post.getCountry());
+                    durationList.add(post.getDuration());
+                    descriptionList.add(post.getDescription());
+                    posterList.add(post.getPoster());
+                    yearList.add(post.getYear());
+                    genreList.add(post.getGenre());
+                }
+            }
+            @Override
+            public void onFailure(Call<List<FilmResponse>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+        }
+        public void init(){
+            nameList= new ArrayList<String>();
+            idList=new ArrayList<Integer>();
+            genreList=new ArrayList<String>();
+            descriptionList=new ArrayList<String>();
+            yearList=new ArrayList<Integer>();
+            durationList=new ArrayList<Integer>();
+            posterList=new ArrayList<String>();
+            countryList= new ArrayList<String>();
+        }
 }

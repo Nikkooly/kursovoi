@@ -22,7 +22,11 @@
             <item android:id="@+id/delete_cinema"
                 android:title="Удалить кинотеатр" />
             <item android:id="@+id/change_cinema"
-                android:title="Редактировать кинотеатр" />
+                android:title="Отредактировать кинотеатр" />
+            <item android:id="@+id/add_hall"
+                android:title="Добавить зал" />
+            <item android:id="@+id/delete_hall"
+                android:title="Удалить зал" />
         </menu>
 
     </item>

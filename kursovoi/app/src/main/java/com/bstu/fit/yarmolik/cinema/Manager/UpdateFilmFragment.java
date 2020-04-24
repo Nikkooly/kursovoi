@@ -1,5 +1,6 @@
 package com.bstu.fit.yarmolik.cinema.Manager;
 
+import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bstu.fit.yarmolik.cinema.Login;
+import com.bstu.fit.yarmolik.cinema.Model.FilmInfo;
 import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
@@ -24,6 +27,12 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,12 +43,11 @@ public class UpdateFilmFragment extends Fragment {
     private ArrayList<Integer> idList;
     private String choose="";
     private IMyApi iMyApi;
-    private EditText genre,description,country,duration,year;
+    private EditText genre,description,country,duration,year,poster;
     private Button updateButton;
-    private ImageView imageView;
-    private Bitmap poster;
     private MaterialSpinner spinner;
     private List<FilmResponse> posts;
+    CompositeDisposable compositeDisposable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +63,15 @@ public class UpdateFilmFragment extends Fragment {
                     choose = item;
                     int chooseIndex = nameList.indexOf(item);
                     loadFilm(idList.get(chooseIndex));
+            }
+        });
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int chooseIndex = nameList.indexOf(choose);
+                    updatePut(idList.get(chooseIndex),choose);
+                    Toast.makeText(getContext(), "Успешно изменено", Toast.LENGTH_LONG).show();
+
             }
         });
         return view;
@@ -89,9 +106,7 @@ public class UpdateFilmFragment extends Fragment {
                 description.setText(response.body().getDescription());
                 country.setText(response.body().getCountry());
                 duration.setText(response.body().getDuration().toString());
-                byte[] image = response.body().getPoster().getBytes();
-                imageView.setImageBitmap(getImage(image));
-
+                poster.setText(response.body().getPoster());
             }
 
             @Override
@@ -111,16 +126,38 @@ public class UpdateFilmFragment extends Fragment {
         country=view.findViewById(R.id.updateCountryOfFilm);
         duration=view.findViewById(R.id.updateDurationOfFilm);
         year=view.findViewById(R.id.updateYearOfFilm);
-        imageView=view.findViewById(R.id.updateImageView);
+        poster=view.findViewById(R.id.updatePosterOfFilm);
+        compositeDisposable=new CompositeDisposable();
     }
-    public static byte[] getBytes(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
-    }
+    private void updatePut(int id,String name){
+        AlertDialog alertDialog = new SpotsDialog.Builder()
+                .setContext(getContext())
+                .build();
+        alertDialog.show();
+        FilmInfo film= new FilmInfo(
+                name,
+                Integer.parseInt(year.getText().toString()),
+                country.getText().toString(),
+                Integer.parseInt(duration.getText().toString()),
+                genre.getText().toString(),
+                description.getText().toString(),
+                poster.getText().toString()
 
-    // convert from byte array to bitmap
-    public static Bitmap getImage(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
+        );
+        Call<FilmInfo> call= iMyApi.updateFilm(id,film);
+        call.enqueue(new Callback<FilmInfo>() {
+            @Override
+            public void onResponse(Call<FilmInfo> call, Response<FilmInfo> response) {
+                //Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
+                alertDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<FilmInfo> call, Throwable t) {
+               // Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                alertDialog.dismiss();
+
+            }
+        });
     }
 }

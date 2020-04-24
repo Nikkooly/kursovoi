@@ -71,6 +71,41 @@ FragmentTransaction ft;
                 ft.addToBackStack(null);
                 ft.commit();
                 return true;
+            case R.id.add_cinema :
+                currentFragment = new AddCinemaFragment();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.managerContainer, currentFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                return true;
+            case R.id.delete_cinema :
+                currentFragment = new DeleteCinemaFragment();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.managerContainer, currentFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                return true;
+            case R.id.change_cinema :
+                currentFragment = new UpdateCinemaFragment();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.managerContainer, currentFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                return true;
+            case R.id.add_hall :
+                currentFragment = new AddHallFragment();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.managerContainer, currentFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                return true;
+            case R.id.delete_hall :
+                currentFragment = new DeleteHallFragment();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.managerContainer, currentFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                return true;
             case R.id.add_seance :
                 currentFragment = new AddSeanceFragment();
                 ft = getSupportFragmentManager().beginTransaction();
