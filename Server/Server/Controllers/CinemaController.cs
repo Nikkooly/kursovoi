@@ -23,16 +23,16 @@ namespace Server.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string Get(string id)
         {
-            if (cinemaContext.CinemaInfo.Any(x => x.Id == id))
+            if (cinemaContext.CinemaInfo.Any(x => x.Id.ToString().Equals(id)))
             {
                 try
                 {
                     return JsonConvert.SerializeObject(
                         cinemaContext.CinemaInfo
                         .Select(x => new { x.Id, x.Name, x.Adress})
-                        .Where(u => u.Id.Equals(id))
+                        .Where(u => u.Id.ToString().Equals(id))
                         .First());
                 }
                 catch (Exception ex)
@@ -55,6 +55,7 @@ namespace Server.Controllers
                 CinemaInfo cinema = new CinemaInfo();
                 cinema.Name = value.Name;
                 cinema.Adress = value.Adress;
+                cinema.Id = Guid.NewGuid();
                 try
                 {
                     cinemaContext.Add(cinema);
@@ -75,9 +76,9 @@ namespace Server.Controllers
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public string Put(int id, [FromBody]CinemaInfo value)
+        public string Put(string id, [FromBody]CinemaInfo value)
         {
-            CinemaInfo cinema = cinemaContext.CinemaInfo.Where(u => u.Id.Equals(id)).First();
+            CinemaInfo cinema = cinemaContext.CinemaInfo.Where(u => u.Id.ToString().Equals(id)).First();
             cinema.Name = value.Name;
             cinema.Adress = value.Adress;
 
@@ -95,9 +96,9 @@ namespace Server.Controllers
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public string Delete(string id)
         {
-            CinemaInfo cinema = cinemaContext.CinemaInfo.FirstOrDefault(x => x.Id == id);
+            CinemaInfo cinema = cinemaContext.CinemaInfo.FirstOrDefault(x => x.Id.ToString().Equals(id));
             if (cinema == null)
             {
                 return JsonConvert.SerializeObject("Кинотеатр не найден!");

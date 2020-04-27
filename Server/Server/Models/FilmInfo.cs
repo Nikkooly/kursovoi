@@ -11,7 +11,7 @@ namespace Server.Models
             Seance = new HashSet<Seance>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Poster { get; set; }
         public int Year { get; set; }
         public string Country { get; set; }

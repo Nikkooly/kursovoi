@@ -18,13 +18,11 @@ namespace Server.Models
         public virtual DbSet<CinemaInfo> CinemaInfo { get; set; }
         public virtual DbSet<FilmInfo> FilmInfo { get; set; }
         public virtual DbSet<HallInfo> HallInfo { get; set; }
-        public virtual DbSet<PlacePrice> PlacePrice { get; set; }
-        public virtual DbSet<Places> Places { get; set; }
         public virtual DbSet<Rating> Rating { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
+        public virtual DbSet<SaledTickets> SaledTickets { get; set; }
         public virtual DbSet<Seance> Seance { get; set; }
-        public virtual DbSet<Ticket> Ticket { get; set; }
-        public virtual DbSet<Type> Type { get; set; }
+        public virtual DbSet<Tickets> Tickets { get; set; }
         public virtual DbSet<UserData> UserData { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -42,7 +40,9 @@ namespace Server.Models
             {
                 entity.ToTable("cinema_info");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Adress)
                     .IsRequired()
@@ -59,7 +59,9 @@ namespace Server.Models
             {
                 entity.ToTable("film_info");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Country)
                     .HasColumnName("country")
@@ -92,7 +94,9 @@ namespace Server.Models
             {
                 entity.ToTable("hall_info");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.CinemaId).HasColumnName("cinema_id");
 
@@ -109,59 +113,13 @@ namespace Server.Models
                     .HasConstraintName("Fk_HallInfo_Cascade");
             });
 
-            modelBuilder.Entity<PlacePrice>(entity =>
-            {
-                entity.ToTable("place_price");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.PlaceId).HasColumnName("place_id");
-
-                entity.Property(e => e.Price).HasColumnName("price");
-
-                entity.Property(e => e.SeanceId).HasColumnName("seance_id");
-
-                entity.Property(e => e.Status).HasColumnName("status");
-
-                entity.HasOne(d => d.Place)
-                    .WithMany(p => p.PlacePrice)
-                    .HasForeignKey(d => d.PlaceId)
-                    .HasConstraintName("Fk_Place_price_places_Cascade");
-
-                entity.HasOne(d => d.Seance)
-                    .WithMany(p => p.PlacePrice)
-                    .HasForeignKey(d => d.SeanceId)
-                    .HasConstraintName("Fk_Place_price_seance_id_Cascade");
-            });
-
-            modelBuilder.Entity<Places>(entity =>
-            {
-                entity.ToTable("places");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.HallId).HasColumnName("hall_id");
-
-                entity.Property(e => e.Place).HasColumnName("place");
-
-                entity.Property(e => e.TypeId).HasColumnName("type_id");
-
-                entity.HasOne(d => d.Hall)
-                    .WithMany(p => p.PlacesNavigation)
-                    .HasForeignKey(d => d.HallId)
-                    .HasConstraintName("Fk_Places_hall_id__Cascade");
-
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.Places)
-                    .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("Fk_Places_Type__Cascade");
-            });
-
             modelBuilder.Entity<Rating>(entity =>
             {
                 entity.ToTable("rating");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.FilmId).HasColumnName("film_id");
 
@@ -185,21 +143,50 @@ namespace Server.Models
                     .HasMaxLength(10);
             });
 
+            modelBuilder.Entity<SaledTickets>(entity =>
+            {
+                entity.ToTable("saled_tickets");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.TicketId).HasColumnName("ticket_id");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Ticket)
+                    .WithMany(p => p.SaledTickets)
+                    .HasForeignKey(d => d.TicketId)
+                    .HasConstraintName("Fk_Saled_tickets_ticket_cascade");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.SaledTickets)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("Fk_Saled_tickets_user_id___cascade");
+            });
+
             modelBuilder.Entity<Seance>(entity =>
             {
                 entity.ToTable("seance");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Date)
+                    .IsRequired()
                     .HasColumnName("date")
-                    .HasColumnType("date");
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.FilmId).HasColumnName("film_id");
 
                 entity.Property(e => e.HallId).HasColumnName("hall_id");
 
-                entity.Property(e => e.Time).HasColumnName("time");
+                entity.Property(e => e.Time)
+                    .IsRequired()
+                    .HasColumnName("time")
+                    .HasMaxLength(10);
 
                 entity.HasOne(d => d.Film)
                     .WithMany(p => p.Seance)
@@ -209,48 +196,38 @@ namespace Server.Models
                 entity.HasOne(d => d.Hall)
                     .WithMany(p => p.Seance)
                     .HasForeignKey(d => d.HallId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Fk_Seance_Hall_id__Cascade");
+                    .HasConstraintName("Fk_Seance_Hall_id___Cascade");
             });
 
-            modelBuilder.Entity<Ticket>(entity =>
+            modelBuilder.Entity<Tickets>(entity =>
             {
-                entity.ToTable("ticket");
+                entity.ToTable("tickets");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.PriceId).HasColumnName("price_id");
+                entity.Property(e => e.Place).HasColumnName("place");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.Price).HasColumnName("price");
 
-                entity.HasOne(d => d.Price)
-                    .WithMany(p => p.Ticket)
-                    .HasForeignKey(d => d.PriceId)
-                    .HasConstraintName("Fk_Ticket_Place_price_Cascade");
+                entity.Property(e => e.SeanceId).HasColumnName("seance_id");
 
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Ticket)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("Fk_Ticket_id_user_Cascade");
-            });
+                entity.Property(e => e.Status).HasColumnName("status");
 
-            modelBuilder.Entity<Type>(entity =>
-            {
-                entity.ToTable("type");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Type1)
-                    .IsRequired()
-                    .HasColumnName("type")
-                    .HasMaxLength(10);
+                entity.HasOne(d => d.Seance)
+                    .WithMany(p => p.Tickets)
+                    .HasForeignKey(d => d.SeanceId)
+                    .HasConstraintName("Fk_Place_price_seance_id_Cascade");
             });
 
             modelBuilder.Entity<UserData>(entity =>
             {
                 entity.ToTable("user_data");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Email)
                     .IsRequired()

@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 namespace Server.Models
 {
-    public partial class UserData
+    public partial class Tickets
     {
-        public UserData()
+        public Tickets()
         {
             SaledTickets = new HashSet<SaledTickets>();
         }
 
         public Guid Id { get; set; }
-        public string Login { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public int? RoleId { get; set; }
+        public int Place { get; set; }
+        public double Price { get; set; }
+        public bool Status { get; set; }
+        public Guid SeanceId { get; set; }
 
-        public virtual Roles Role { get; set; }
+        public virtual Seance Seance { get; set; }
         public virtual ICollection<SaledTickets> SaledTickets { get; set; }
     }
 }

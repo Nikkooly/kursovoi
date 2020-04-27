@@ -28,16 +28,16 @@ namespace Server.Controllers
 
         // GET api/<controller>/5
          [HttpGet("{id}")]
-         public string Get(int id)
+         public string Get(string id)
          {
-            if(cinemaContext.FilmInfo.Any(x => x.Id == id))
+            if(cinemaContext.FilmInfo.Any(x => x.Id.ToString().Equals(id)))
             {
                 try
                 {
                     return JsonConvert.SerializeObject(
                         cinemaContext.FilmInfo
                         .Select(x => new { x.Id, x.Name, x.Poster, x.Year, x.Country, x.Description, x.Duration, x.Genre })
-                        .Where(u => u.Id.Equals(id))
+                        .Where(u => u.Id.ToString().Equals(id))
                         .First());
                 }
                 catch (Exception ex)
@@ -65,6 +65,7 @@ namespace Server.Controllers
                 film.Genre = value.Genre;
                 film.Description = value.Description;
                 film.Poster = value.Poster;
+                film.Id = Guid.NewGuid();
                 try
                 {
                     cinemaContext.Add(film);
@@ -85,9 +86,9 @@ namespace Server.Controllers
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public string Put(int id, [FromBody]FilmInfo value)
+        public string Put(string id, [FromBody]FilmInfo value)
         {
-                FilmInfo film = cinemaContext.FilmInfo.Where(u => u.Id.Equals(id)).First();
+                FilmInfo film = cinemaContext.FilmInfo.Where(u => u.Id.ToString().Equals(id)).First();
                 film.Name = value.Name;
                 film.Year = value.Year;
                 film.Country = value.Country;
@@ -107,9 +108,9 @@ namespace Server.Controllers
                 }
         }
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public string Delete(string id)
         {
-            FilmInfo film= cinemaContext.FilmInfo.FirstOrDefault(x => x.Id == id);
+            FilmInfo film= cinemaContext.FilmInfo.FirstOrDefault(x => x.Id.ToString().Equals(id));
             if (film == null)
             {
                 return JsonConvert.SerializeObject("Фильм не найден!");

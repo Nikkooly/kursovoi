@@ -23,9 +23,9 @@ namespace Server.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string Get(string id)
         {
-            if (cinemaContext.CinemaInfo.Any(x => x.Id == id))
+            if (cinemaContext.CinemaInfo.Any(x => x.Id.ToString().Equals(id)))
             {
                 try
                 {
@@ -54,6 +54,7 @@ namespace Server.Controllers
                 hall.CinemaId = value.CinemaId;
                 hall.Name = value.Name;
                 hall.Places = value.Places;
+                hall.Id = Guid.NewGuid();
                 try
                 {
                     cinemaContext.Add(hall);
@@ -74,15 +75,15 @@ namespace Server.Controllers
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(string id, [FromBody]string value)
         {
         }
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public string Delete(string id)
         {
-            HallInfo hall = cinemaContext.HallInfo.FirstOrDefault(x => x.Id == id);
+            HallInfo hall = cinemaContext.HallInfo.FirstOrDefault(x => x.Id.ToString().Equals(id));
             if (hall == null)
             {
                 return JsonConvert.SerializeObject("Зал не найден!");

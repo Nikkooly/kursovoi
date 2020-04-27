@@ -25,6 +25,7 @@ namespace Server.Controllers
                 user.Email = value.Email;
                 user.Password = value.Password;
                 user.RoleId = value.RoleId;
+                user.Id = Guid.NewGuid();
                 try
                 {
                     cinemaContext.Add(user);

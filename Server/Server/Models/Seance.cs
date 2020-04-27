@@ -7,17 +7,17 @@ namespace Server.Models
     {
         public Seance()
         {
-            PlacePrice = new HashSet<PlacePrice>();
+            Tickets = new HashSet<Tickets>();
         }
 
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public TimeSpan Time { get; set; }
-        public int HallId { get; set; }
-        public int FilmId { get; set; }
+        public Guid Id { get; set; }
+        public string Date { get; set; }
+        public string Time { get; set; }
+        public Guid HallId { get; set; }
+        public Guid FilmId { get; set; }
 
         public virtual FilmInfo Film { get; set; }
         public virtual HallInfo Hall { get; set; }
-        public virtual ICollection<PlacePrice> PlacePrice { get; set; }
+        public virtual ICollection<Tickets> Tickets { get; set; }
     }
 }
