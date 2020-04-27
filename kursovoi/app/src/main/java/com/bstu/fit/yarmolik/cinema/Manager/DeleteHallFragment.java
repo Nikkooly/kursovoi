@@ -50,9 +50,9 @@ private Button deleteButton;
     private List<HallResponse> hall;
     private ArrayList<String> list;
     List<FilmResponse> posts;
-    private ArrayList<Integer> idList;
+    private ArrayList<String> idList;
     private ArrayList<String> listHall;
-    private ArrayList<Integer> idListHall;
+    private ArrayList<String> idListHall;
     private String chooseCinema="";
     private boolean check=false;
     private String chooseHall="";
@@ -115,9 +115,9 @@ private Button deleteButton;
         spinnerHall=view.findViewById(R.id.selectHallToDelete);
         deleteButton=view.findViewById(R.id.deleteHall);
         list= new ArrayList<String>();
-        idList=new ArrayList<Integer>();
+        idList=new ArrayList<String>();
         listHall= new ArrayList<String>();
-        idListHall=new ArrayList<Integer>();
+        idListHall=new ArrayList<String>();
 
     }
     private void loadCinema(){
@@ -138,7 +138,7 @@ private Button deleteButton;
             }
         });
     }
-    public void loadHallInfo(int id){
+    public void loadHallInfo(String id){
         Call<List<HallResponse>> call =iMyApi.getHallInfo(id);
         call.enqueue(new Callback<List<HallResponse>>() {
             @Override
@@ -155,32 +155,6 @@ private Button deleteButton;
 
             }
         });
-        /*hall=new ArrayList<String>();
-        Call<String> call =iMyApi.getHallInfo(id);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                String info=response.body().replace('"','\"');
-                try {
-                    JSONArray jsonArr = new JSONArray(info);
-                    for (int i = 0; i < jsonArr.length(); i++) {
-                        JSONObject jsonObj = (JSONObject) jsonArr.get(i);
-                        listHall.add(jsonObj.get("Name").toString());
-                        //Toast.makeText(getContext(), listHall.get(i), Toast.LENGTH_SHORT).show();
-                    }
-                    spinnerHall.setItems(listHall);
-
-
-                }
-                catch (Exception ex){
-                    Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-
-            }
-        });*/
 
     }
 }

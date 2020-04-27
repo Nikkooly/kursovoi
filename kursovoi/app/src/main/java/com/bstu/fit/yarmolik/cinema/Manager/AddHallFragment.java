@@ -36,7 +36,7 @@ import retrofit2.Response;
 public class AddHallFragment extends Fragment {
     private List<CinemaResponce> cinema;
     private ArrayList<String> list;
-    private ArrayList<Integer> idList;
+    private ArrayList<String> idList;
     private String choose="";
     private EditText name, countOfPlaces;
     private Button addHallButton;
@@ -63,7 +63,7 @@ public class AddHallFragment extends Fragment {
                 String nameOfHall=name.getText().toString();
                 String countOfHall=countOfPlaces.getText().toString();
                 if(!choose.equals("") && !nameOfHall.equals("") && !countOfHall.equals("")){
-                    int cinemaId=idList.get(position);
+                    String cinemaId=idList.get(position);
                     AlertDialog alertDialog = new SpotsDialog.Builder()
                             .setContext(getContext())
                             .build();
@@ -101,7 +101,7 @@ public class AddHallFragment extends Fragment {
         addHallButton=view.findViewById(R.id.addHall);
         compositeDisposable=new CompositeDisposable();
         list= new ArrayList<String>();
-        idList=new ArrayList<Integer>();
+        idList=new ArrayList<String>();
     }
     private void loadCinema(){
         Call<List<CinemaResponce>> call=iMyApi.getCinema();

@@ -3,7 +3,7 @@ package com.bstu.fit.yarmolik.cinema.Responces;
 import java.io.Serializable;
 
 public class CinemaResponce implements Serializable {
-    public Integer Id;
+    public String Id;
     public String Name;
     public String Adress;
 
@@ -23,11 +23,11 @@ public class CinemaResponce implements Serializable {
         Adress = adress;
     }
 
-    public Integer getId() {
+    public String getId() {
         return Id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         Id = id;
     }
 }

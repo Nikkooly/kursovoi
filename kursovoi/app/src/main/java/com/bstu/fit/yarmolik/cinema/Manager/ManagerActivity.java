@@ -16,18 +16,56 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bstu.fit.yarmolik.cinema.Login;
 import com.bstu.fit.yarmolik.cinema.R;
 
-public class ManagerActivity extends AppCompatActivity {
+public class ManagerActivity extends AppCompatActivity implements OnFragment1DataListener {
 Toolbar toolbar;
 Fragment currentFragment = null;
+ConstraintLayout fragmentPlaces;
 FragmentTransaction ft;
     final int REQUEST_CODE_GALLERY = 999;
+    @Override
+    public void onOpenFragment2(String nameCinema, String nameHall, Integer countPlaces,
+                                String nameFilm, String dateSeance, String timeSeance,
+                                String idHallSeance,String idFilmSeance) {
+       /* FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.fragmentPlaces);
+        if (fragment == null) {
+            fragment = new AddPlacesSeanceFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("nameCinema", nameCinema);
+            bundle.putString("nameHall", nameHall);
+            bundle.putString("nameFilm", nameFilm);
+            bundle.putInt("countPlaces",countPlaces);
+            fragment.setArguments(bundle);
+            fm.beginTransaction()
+                    .add(R.id.fragmentPlaces, fragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit();
+        }*/
+        currentFragment = new AddPlacesSeanceFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("nameCinema", nameCinema);
+        bundle.putString("nameHall", nameHall);
+        bundle.putString("nameFilm", nameFilm);
+        bundle.putInt("countPlaces",countPlaces);
+        bundle.putString("dateSeance", dateSeance);
+        bundle.putString("timeSeance", timeSeance);
+        bundle.putString("idHallSeance", idHallSeance);
+        bundle.putString("idFilmSeance", idFilmSeance);
+        currentFragment.setArguments(bundle);
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.managerContainer, currentFragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +76,7 @@ FragmentTransaction ft;
         toolbar=findViewById(R.id.toolbar);
         toolbar.setTitle("Magnifisent");
         setSupportActionBar(toolbar);
+        fragmentPlaces=findViewById(R.id.fragmentPlaces);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -121,6 +160,9 @@ FragmentTransaction ft;
         }
         return false;
     }
-
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(ManagerActivity.this,"Навигация осуществляется только через меню",Toast.LENGTH_SHORT).show();
+    }
 
 }

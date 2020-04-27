@@ -46,8 +46,8 @@ SliderFragment sliderFragment;
     FragmentTransaction ft;
     public IMyApi iMyApi;
     public List<FilmResponse> film;
-    public ArrayList<String> nameList,countryList,descriptionList,posterList,genreList;
-    public ArrayList<Integer> idList,durationList,yearList;
+    public ArrayList<String> nameList,countryList,descriptionList,posterList,genreList,idList;
+    public ArrayList<Integer> durationList,yearList;
     CompositeDisposable compositeDisposable;
     private BottomNavigationView bottomNavigationView;
     @Override
@@ -57,7 +57,7 @@ SliderFragment sliderFragment;
 
         init();
         iMyApi= RetrofitClient.getInstance().create(IMyApi.class);
-        getFilms();
+        //getFilms();
         //Toast.makeText(this,nameList.get(0),Toast.LENGTH_SHORT).show();
         ft = getSupportFragmentManager().beginTransaction();
         currentFragment = new SliderFragment();
@@ -108,7 +108,7 @@ SliderFragment sliderFragment;
                     }
                 });
     }
-    public void getFilms(){
+    /*public void getFilms(){
         Call<List<FilmResponse>> call=iMyApi.getFilms();
         call.enqueue(new Callback<List<FilmResponse>>() {
             @Override
@@ -134,10 +134,10 @@ SliderFragment sliderFragment;
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-        }
+        }*/
         public void init(){
             nameList= new ArrayList<String>();
-            idList=new ArrayList<Integer>();
+            idList=new ArrayList<String>();
             genreList=new ArrayList<String>();
             descriptionList=new ArrayList<String>();
             yearList=new ArrayList<Integer>();

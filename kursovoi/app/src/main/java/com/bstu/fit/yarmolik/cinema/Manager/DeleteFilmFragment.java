@@ -35,7 +35,7 @@ IMyApi iMyApi;
     List<FilmResponse> posts;
     TextView textView;
     ArrayList<String> list;
-    ArrayList<Integer> idList;
+    ArrayList<String> idList;
     String choose="";
     FilmResponse filmResponse;
     Button deleteButton;
@@ -48,7 +48,7 @@ IMyApi iMyApi;
         spinner= view.findViewById(R.id.spinnerDelete);
         deleteButton=view.findViewById(R.id.deleteFilm);
         list= new ArrayList<String>();
-        idList=new ArrayList<Integer>();
+        idList=new ArrayList<String>();
         loadFilms();
         spinner.setItems(list);
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {

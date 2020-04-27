@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.bstu.fit.yarmolik.cinema.Fragments.CinemaFragment"
+    android:layout_marginBottom="57dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.recyclerview.widget.RecyclerView

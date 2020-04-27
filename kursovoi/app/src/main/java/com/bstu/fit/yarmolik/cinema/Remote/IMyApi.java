@@ -4,6 +4,8 @@ import com.bstu.fit.yarmolik.cinema.Model.CinemaInfo;
 import com.bstu.fit.yarmolik.cinema.Model.FilmInfo;
 import com.bstu.fit.yarmolik.cinema.Model.HallInfo;
 import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
+import com.bstu.fit.yarmolik.cinema.Model.Seance;
+import com.bstu.fit.yarmolik.cinema.Model.Tickets;
 import com.bstu.fit.yarmolik.cinema.Model.UserData;
 import com.bstu.fit.yarmolik.cinema.Responces.CinemaResponce;
 import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
@@ -35,26 +37,29 @@ public interface IMyApi {
     @GET("api/films")
     Call<List<FilmResponse>> getFilms();
     @DELETE("api/films/{id}")
-    Call<Void> deletePost(@Path("id") int id);
+    Call<Void> deletePost(@Path("id") String id);
     @GET("api/films/{id}")
-    Call<FilmResponse> getFilm(@Path("id") int id);
+    Call<FilmResponse> getFilm(@Path("id") String id);
     @PUT("api/films/{id}")
-    Call<FilmInfo> updateFilm(@Path("id") int id, @Body FilmInfo film);
+    Call<FilmInfo> updateFilm(@Path("id") String id, @Body FilmInfo film);
     @POST("api/cinema")
     Observable<String> addCinema(@Body CinemaInfo cinema);
     @DELETE("api/cinema/{id}")
-    Call<Void> deleteCinema(@Path("id") int id);
+    Call<Void> deleteCinema(@Path("id") String id);
     @GET("api/cinema")
     Call<List<CinemaResponce>> getCinema();
     @GET("api/cinema/{id}")
-    Call<CinemaResponce> getCinemaInfo(@Path("id") int id);
+    Call<CinemaResponce> getCinemaInfo(@Path("id") String id);
     @PUT("api/cinema/{id}")
-    Call<CinemaInfo> updateCinema(@Path("id") int id, @Body CinemaInfo cinema);
+    Call<CinemaInfo> updateCinema(@Path("id") String id, @Body CinemaInfo cinema);
     @POST("api/hall")
     Observable<String> addHall(@Body HallInfo hall);
     @GET("api/hall/{id}")
-    Call<List<HallResponse>> getHallInfo(@Path("id") int id);
+    Call<List<HallResponse>> getHallInfo(@Path("id") String id);
     @DELETE("api/hall/{id}")
-    Call<Void> deleteHall(@Path("id") int id);
-
+    Call<Void> deleteHall(@Path("id") String id);
+    @POST("api/seance")
+    Observable<String> addSeance(@Body Seance seance);
+    @POST("api/tickets")
+    Observable<String> addTickets(@Body Tickets tickets);
 }

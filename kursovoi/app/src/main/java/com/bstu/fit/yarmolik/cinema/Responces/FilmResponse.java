@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class FilmResponse implements Serializable {
-    public Integer Id;
+    public String Id;
     public String Name;
     public Integer Year;
     public String Country;
@@ -18,11 +18,11 @@ public class FilmResponse implements Serializable {
     @SerializedName("body")
     private String text;
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         Id = id;
     }
 
-    public Integer getId() {
+    public String getId() {
         return Id;
     }
 

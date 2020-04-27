@@ -1,10 +1,10 @@
 package com.bstu.fit.yarmolik.cinema.Model;
 
 public class HallInfo {
-    private Integer CinemaId;
+    private String CinemaId;
     private String Name;
     private Integer Places;
-    public  HallInfo(Integer cinemaId,String name, Integer places){
+    public  HallInfo(String cinemaId,String name, Integer places){
         CinemaId=cinemaId;
         Name=name;
         Places=places;
@@ -18,9 +18,6 @@ public class HallInfo {
         return Name;
     }
 
-    public Integer getCinemaId() {
-        return CinemaId;
-    }
 
     public Integer getPlaces() {
         return Places;
@@ -30,8 +27,11 @@ public class HallInfo {
         Places = places;
     }
 
-    public void setCinemaId(Integer cinemaId) {
+    public void setCinemaId(String cinemaId) {
         CinemaId = cinemaId;
     }
 
+    public String getCinemaId() {
+        return CinemaId;
+    }
 }

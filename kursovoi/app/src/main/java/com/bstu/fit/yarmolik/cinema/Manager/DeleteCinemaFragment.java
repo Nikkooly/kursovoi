@@ -32,7 +32,7 @@ public class DeleteCinemaFragment extends Fragment {
     private MaterialSpinner spinner;
     private List<CinemaResponce> cinema;
     private ArrayList<String> list;
-    private ArrayList<Integer> idList;
+    private ArrayList<String> idList;
     private String choose="";
     private Button deleteButton;
     @Override
@@ -84,7 +84,7 @@ public class DeleteCinemaFragment extends Fragment {
         spinner= view.findViewById(R.id.spinnerDeleteCinema);
         deleteButton=view.findViewById(R.id.deleteCinema);
         list= new ArrayList<String>();
-        idList=new ArrayList<Integer>();
+        idList=new ArrayList<String>();
     }
     private void loadCinema(){
         Call<List<CinemaResponce>> call=iMyApi.getCinema();

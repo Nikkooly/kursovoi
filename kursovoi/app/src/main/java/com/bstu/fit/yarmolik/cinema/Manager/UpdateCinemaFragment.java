@@ -33,7 +33,7 @@ import retrofit2.Response;
 
 public class UpdateCinemaFragment extends Fragment {
     private ArrayList<String> nameList;
-    private ArrayList<Integer> idList;
+    private ArrayList<String> idList;
     private String choose="";
     private IMyApi iMyApi;
     private EditText address;
@@ -76,7 +76,7 @@ public class UpdateCinemaFragment extends Fragment {
         spinner= view.findViewById(R.id.spinnerUpdateCinema);
         updateButton=view.findViewById(R.id.updateCinema);
         nameList= new ArrayList<String>();
-        idList=new ArrayList<Integer>();
+        idList=new ArrayList<String>();
         address=view.findViewById(R.id.updateAdressOfCinema);
     }
     private void loadCinema(){
@@ -96,7 +96,7 @@ public class UpdateCinemaFragment extends Fragment {
             }
         });
     }
-    private void loadCinemaInfo(int id){
+    private void loadCinemaInfo(String id){
         Call<CinemaResponce> call=iMyApi.getCinemaInfo(id);
         call.enqueue(new Callback<CinemaResponce>() {
             @Override
@@ -110,7 +110,7 @@ public class UpdateCinemaFragment extends Fragment {
             }
         });
     }
-    private void updateCinemaInfo(int id,String name){
+    private void updateCinemaInfo(String id,String name){
         AlertDialog alertDialog = new SpotsDialog.Builder()
                 .setContext(getContext())
                 .build();

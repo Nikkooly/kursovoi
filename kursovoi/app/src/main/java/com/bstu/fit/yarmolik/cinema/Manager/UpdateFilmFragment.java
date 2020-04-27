@@ -40,7 +40,7 @@ import retrofit2.Response;
 
 public class UpdateFilmFragment extends Fragment {
     private ArrayList<String> nameList;
-    private ArrayList<Integer> idList;
+    private ArrayList<String> idList;
     private String choose="";
     private IMyApi iMyApi;
     private EditText genre,description,country,duration,year,poster;
@@ -96,7 +96,7 @@ public class UpdateFilmFragment extends Fragment {
             }
         });
     }
-    private void loadFilm(int id){
+    private void loadFilm(String id){
         Call<FilmResponse> call=iMyApi.getFilm(id);
         call.enqueue(new Callback<FilmResponse>() {
             @Override
@@ -120,7 +120,7 @@ public class UpdateFilmFragment extends Fragment {
         spinner= view.findViewById(R.id.spinnerUpdate);
         updateButton=view.findViewById(R.id.updateFilm);
         nameList= new ArrayList<String>();
-        idList=new ArrayList<Integer>();
+        idList=new ArrayList<String>();
         genre=view.findViewById(R.id.updateGenreOfFilm);
         description=view.findViewById(R.id.updateDescriptionOfFilm);
         country=view.findViewById(R.id.updateCountryOfFilm);
@@ -129,7 +129,7 @@ public class UpdateFilmFragment extends Fragment {
         poster=view.findViewById(R.id.updatePosterOfFilm);
         compositeDisposable=new CompositeDisposable();
     }
-    private void updatePut(int id,String name){
+    private void updatePut(String id,String name){
         AlertDialog alertDialog = new SpotsDialog.Builder()
                 .setContext(getContext())
                 .build();

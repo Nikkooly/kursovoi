@@ -13,9 +13,10 @@ public class RetrofitClient {
 
     public static Retrofit getInstance() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY); //можно также заменить на Level.BODY чтоб увидеть полное тело запроса и ответа
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
         if(instance==null)
             instance=new Retrofit.Builder()
                     .baseUrl("http://10.0.2.2:5000/")
@@ -23,6 +24,7 @@ public class RetrofitClient {
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .client(client)
                     .build();
         return instance;
     }

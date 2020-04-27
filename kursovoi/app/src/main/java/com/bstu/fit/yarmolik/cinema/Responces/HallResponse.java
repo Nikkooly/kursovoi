@@ -3,7 +3,7 @@ package com.bstu.fit.yarmolik.cinema.Responces;
 import java.io.Serializable;
 
 public class HallResponse implements Serializable {
-    private Integer Id;
+    private String Id;
     private String Name;
     private Integer Places;
 
@@ -23,11 +23,11 @@ public class HallResponse implements Serializable {
         Name = name;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         Id = id;
     }
 
-    public Integer getId() {
+    public String getId() {
         return Id;
     }
 }

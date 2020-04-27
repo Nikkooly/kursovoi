@@ -3,16 +3,16 @@ package com.bstu.fit.yarmolik.cinema.Responces;
 import java.io.Serializable;
 
 public class UserResponce implements Serializable {
-public int Id;
+public String Id;
 public String Login;
 public String Email;
 
-    public int getId() {
-        return Id;
+    public void setId(String id) {
+        Id = id;
     }
 
-    public void setId(int id) {
-        Id = id;
+    public String getId() {
+        return Id;
     }
 
     public String getLogin() {

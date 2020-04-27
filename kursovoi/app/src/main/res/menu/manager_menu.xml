@@ -36,22 +36,10 @@
         <menu>
             <item android:id="@+id/add_seance"
                 android:title="Добавить сеанс" />
-            <item android:id="@+id/delete_seance"
-                android:title="Удалить сеанс" />
-            <item android:id="@+id/change_seance"
-                android:title="Редактировать сеанс" />
         </menu>
 
     </item>
-    <item
-        android:id="@+id/action_users"
-        android:title="Пользователи">
-        <menu>
-            <item android:id="@+id/show_users"
-                android:title="Просмотреть" />
-        </menu>
 
-    </item>
     <item
         android:id="@+id/action_exit"
         android:title="Выход">
