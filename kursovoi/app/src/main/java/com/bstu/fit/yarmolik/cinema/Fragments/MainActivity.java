@@ -1,4 +1,4 @@
-package com.bstu.fit.yarmolik.cinema;
+package com.bstu.fit.yarmolik.cinema.Fragments;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -19,8 +19,10 @@ import com.bstu.fit.yarmolik.cinema.Fragments.FilmFragment;
 import com.bstu.fit.yarmolik.cinema.Fragments.FragmentMore;
 import com.bstu.fit.yarmolik.cinema.Fragments.SliderFragment;
 import com.bstu.fit.yarmolik.cinema.Fragments.TicketFragment;
+import com.bstu.fit.yarmolik.cinema.Manager.AddPlacesSeanceFragment;
 import com.bstu.fit.yarmolik.cinema.Manager.ManagerActivity;
 import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
+import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
 import com.bstu.fit.yarmolik.cinema.Responces.CinemaResponce;
@@ -39,7 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity   {
 SliderFragment sliderFragment;
     private Toolbar toolbar;
     Fragment currentFragment = null;
@@ -50,11 +52,11 @@ SliderFragment sliderFragment;
     public ArrayList<Integer> durationList,yearList;
     CompositeDisposable compositeDisposable;
     private BottomNavigationView bottomNavigationView;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         init();
         iMyApi= RetrofitClient.getInstance().create(IMyApi.class);
         //getFilms();
@@ -108,33 +110,7 @@ SliderFragment sliderFragment;
                     }
                 });
     }
-    /*public void getFilms(){
-        Call<List<FilmResponse>> call=iMyApi.getFilms();
-        call.enqueue(new Callback<List<FilmResponse>>() {
-            @Override
-            public void onResponse(Call<List<FilmResponse>> call, Response<List<FilmResponse>> response) {
-                if(!response.isSuccessful()){
-                    Toast.makeText(MainActivity.this, response.code(), Toast.LENGTH_LONG).show();
-                }
-                Toast.makeText(MainActivity.this, response.code(), Toast.LENGTH_LONG).show();
-                film=response.body();
-                for(FilmResponse post : film){
-                    nameList.add(post.getName());
-                    idList.add(post.getId());
-                    countryList.add(post.getCountry());
-                    durationList.add(post.getDuration());
-                    descriptionList.add(post.getDescription());
-                    posterList.add(post.getPoster());
-                    yearList.add(post.getYear());
-                    genreList.add(post.getGenre());
-                }
-            }
-            @Override
-            public void onFailure(Call<List<FilmResponse>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-        }*/
+
         public void init(){
             nameList= new ArrayList<String>();
             idList=new ArrayList<String>();

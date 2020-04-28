@@ -1,4 +1,4 @@
-package com.bstu.fit.yarmolik.cinema.Fragments;
+package com.bstu.fit.yarmolik.cinema.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bstu.fit.yarmolik.cinema.CinemaModel;
+import com.bstu.fit.yarmolik.cinema.ModelAdapter.CinemaModel;
 import com.bstu.fit.yarmolik.cinema.R;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -26,13 +26,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.CinemaViewHolder> 
     public class CinemaViewHolder extends  RecyclerView.ViewHolder{
         ImageView imageResourceId;
         CardView cardView;
-        TextView cardName;
+        TextView cardName,address;
             public CinemaViewHolder(View view)
     {
             super(view);
             imageResourceId=view.findViewById(R.id.coverImageView);
             cardName=view.findViewById(R.id.titleTextView);
             cardView=view.findViewById(R.id.card_view);
+            address=view.findViewById(R.id.adressTextView);
         }
     }
 
@@ -41,7 +42,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.CinemaViewHolder> 
         YoYo.with(Techniques.FadeInRight).playOn(holder.cardView);
         holder.cardName.setText(list.get(position).getCardName());
         holder.imageResourceId.setImageResource(list.get(position).getImageResourceId());
-
+        holder.address.setText(list.get(position).getAddress());
     }
     @NonNull
     @Override

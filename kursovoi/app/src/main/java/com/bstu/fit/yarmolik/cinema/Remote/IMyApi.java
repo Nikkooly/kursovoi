@@ -1,5 +1,6 @@
 package com.bstu.fit.yarmolik.cinema.Remote;
 
+import com.bstu.fit.yarmolik.cinema.Model.CheckSeance;
 import com.bstu.fit.yarmolik.cinema.Model.CinemaInfo;
 import com.bstu.fit.yarmolik.cinema.Model.FilmInfo;
 import com.bstu.fit.yarmolik.cinema.Model.HallInfo;
@@ -62,4 +63,6 @@ public interface IMyApi {
     Observable<String> addSeance(@Body Seance seance);
     @POST("api/tickets")
     Observable<String> addTickets(@Body Tickets tickets);
+    @POST("api/check")
+    Observable<String> checkSeance(@Body CheckSeance check);
 }

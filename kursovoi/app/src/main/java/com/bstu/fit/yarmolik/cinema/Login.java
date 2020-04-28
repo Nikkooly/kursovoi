@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bstu.fit.yarmolik.cinema.Fragments.MainActivity;
 import com.bstu.fit.yarmolik.cinema.Manager.ManagerActivity;
 import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
@@ -104,7 +105,7 @@ public class Login extends AppCompatActivity {
                                 if(s.toLowerCase().contains(equal.toString()))
                                 {
                                     Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
-                                    intent=new Intent(Login.this,MainActivity.class);
+                                    intent=new Intent(Login.this, MainActivity.class);
                                     startActivity(intent);
                                 }
                                 else if(s.toLowerCase().contains(secondequal.toString())){

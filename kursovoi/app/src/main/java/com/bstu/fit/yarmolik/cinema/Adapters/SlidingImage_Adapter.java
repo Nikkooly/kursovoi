@@ -1,4 +1,4 @@
-package com.bstu.fit.yarmolik.cinema.Fragments;
+package com.bstu.fit.yarmolik.cinema.Adapters;
 
 import android.content.Context;
 import android.os.Parcelable;

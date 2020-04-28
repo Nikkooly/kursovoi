@@ -1,11 +1,13 @@
-package com.bstu.fit.yarmolik.cinema;
+package com.bstu.fit.yarmolik.cinema.ModelAdapter;
 
 public class CinemaModel {
     String cardName;
     int imageResourceId;
-    public CinemaModel(int imageResourceId, String cardName){
+    String address;
+    public CinemaModel(int imageResourceId, String cardName,String address){
         this.cardName=cardName;
         this.imageResourceId=imageResourceId;
+        this.address=address;
     }
     public void setImageResourceId(int imageResourceId){
         this.imageResourceId=imageResourceId;
@@ -21,5 +23,13 @@ public class CinemaModel {
 
     public String getCardName() {
         return cardName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
