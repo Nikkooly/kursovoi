@@ -1,10 +1,13 @@
 package com.bstu.fit.yarmolik.cinema.Manager;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +17,12 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bestsoft32.tt_fancy_gif_dialog_lib.TTFancyGifDialog;
+import com.bestsoft32.tt_fancy_gif_dialog_lib.TTFancyGifDialogListener;
+import com.bstu.fit.yarmolik.cinema.Fragments.FilmFragment;
 import com.bstu.fit.yarmolik.cinema.Model.Seance;
 import com.bstu.fit.yarmolik.cinema.Model.Tickets;
 import com.bstu.fit.yarmolik.cinema.R;
@@ -23,8 +30,14 @@ import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
 import com.bstu.fit.yarmolik.cinema.Responces.HallResponse;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -36,14 +49,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddPlacesSeanceFragment extends Fragment {
-private TextView  filmName,cinemaName, hallName, countPlaces;
-private String film, cinema, hall,time,date,idHallSeance,idHallFilm;
+private TextView  filmName,cinemaName, hallName, countPlaces,timeStartTextView,timeEndTextView,durationTextView;
+private String film, cinema, hall,time,idHallSeance,date,idHallFilm;
+private Integer durationOfTheFilm;
+private String selectedStartDate="",selectedEndDate="";
+private String timeCheckOne, timeCheckTwo;
+private Date time1,time2;
 private Integer countOfPlaces;
-private Button addPlaces;
+private Button addPlaces,timeStart,timeEnd;
 private ArrayList<Integer> placesList;
 private List<HallResponse> hallResponse;
 private String select="All";
 private EditText priceText;
+Calendar dateAndTime=Calendar.getInstance();
 private RadioButton buttonAll,buttonHalf;
 CompositeDisposable compositeDisposable;
 IMyApi iMyApi;
@@ -57,7 +75,27 @@ RadioGroup radioGroup;
        filmName.setText(film);
        cinemaName.setText(cinema);
        hallName.setText(hall);
+       durationTextView.setText(durationOfTheFilm.toString()+" минут");
       countPlaces.setText(countOfPlaces.toString());
+      timeStart.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+              new TimePickerDialog(getContext(), t,
+                      dateAndTime.get(Calendar.HOUR_OF_DAY),
+                      dateAndTime.get(Calendar.MINUTE), true)
+                      .show();
+          }
+      });
+      timeEnd.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+              new TimePickerDialog(getContext(), s,
+                      dateAndTime.get(Calendar.HOUR_OF_DAY),
+                      dateAndTime.get(Calendar.MINUTE), true)
+                      .show();
+
+          }
+      });
       radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
           @Override
           public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -80,7 +118,7 @@ RadioGroup radioGroup;
                       .setContext(getContext())
                       .build();
               alertDialog.show();
-              Seance seance=new Seance(date,time,idHallSeance,idHallFilm);
+              Seance seance=new Seance(date,idHallSeance,idHallFilm,date);
               compositeDisposable.add(iMyApi.addSeance(seance)
                       .subscribeOn(Schedulers.io())
                       .observeOn(AndroidSchedulers.mainThread())
@@ -92,12 +130,12 @@ RadioGroup radioGroup;
                                   if(!priceText.getText().toString().equals("")){
                                       Double price=Double.parseDouble(priceText.getText().toString());
                                       if(select.equals("All")){
-                                          for(int i=1;i<=price;i++){
+                                          for(int i=1;i<=countOfPlaces;i++){
                                               addTicketsInfo(i,price,s);
                                           }
                                       }
                                       else{
-                                          for(int i=1;i<=price;i+=2){
+                                          for(int i=1;i<=countOfPlaces;i+=2){
                                               addTicketsInfo(i,price,s);
                                           }
                                       }
@@ -134,45 +172,144 @@ RadioGroup radioGroup;
                         }
                     })
             );
-        /*compositeDisposable.add(iMyApi.addSeance(seance)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        Toast.makeText(getContext(),s,Toast.LENGTH_SHORT).show();
-                        alertDialog.dismiss();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        alertDialog.dismiss();
-                        Toast.makeText(getContext(), throwable.getMessage(),Toast.LENGTH_SHORT).show();
-                    }
-                })
-        );*/
     }
     private void init(View view){
-        filmName=view.findViewById(R.id.textView20);
-        cinemaName=view.findViewById(R.id.textView8);
-        hallName=view.findViewById(R.id.textView15);
-        countPlaces=view.findViewById(R.id.textView17);
-        film=getArguments().getString("nameFilm");
-        cinema=getArguments().getString("nameCinema");
-        hall=getArguments().getString("nameHall");
-        countOfPlaces=getArguments().getInt("countPlaces");
-        date=getArguments().getString("dateSeance");
-        time=getArguments().getString("timeSeance");
-        idHallFilm=getArguments().getString("idFilmSeance");
-        idHallSeance=getArguments().getString("idHallSeance");
-        addPlaces=view.findViewById(R.id.addPlaces);
-        buttonAll=view.findViewById(R.id.allPlaces);
-        buttonHalf=view.findViewById(R.id.halfPlaces);
-        radioGroup=view.findViewById(R.id.radios);
-        compositeDisposable=new CompositeDisposable();
-        iMyApi= RetrofitClient.getInstance().create(IMyApi.class);
-        priceText=view.findViewById(R.id.editText2);
-        placesList=new ArrayList<Integer>();
+        try {
+            filmName = view.findViewById(R.id.textView20);
+            cinemaName = view.findViewById(R.id.textView8);
+            hallName = view.findViewById(R.id.textView15);
+            countPlaces = view.findViewById(R.id.textView17);
+            film = getArguments().getString("nameFilm");
+            cinema = getArguments().getString("nameCinema");
+            hall = getArguments().getString("nameHall");
+            countOfPlaces = getArguments().getInt("countPlaces");
+            date = getArguments().getString("dateSeance");
+            idHallFilm = getArguments().getString("idFilmSeance");
+            idHallSeance = getArguments().getString("idHallSeance");
+            durationOfTheFilm=getArguments().getInt("durationFilm");
+            Toast.makeText(getContext(),durationOfTheFilm.toString(),Toast.LENGTH_SHORT).show();
+            addPlaces = view.findViewById(R.id.addPlaces);
+            durationTextView=view.findViewById(R.id.textView27);
+            buttonAll = view.findViewById(R.id.allPlaces);
+            buttonHalf = view.findViewById(R.id.halfPlaces);
+            radioGroup = view.findViewById(R.id.radios);
+            compositeDisposable = new CompositeDisposable();
+            iMyApi = RetrofitClient.getInstance().create(IMyApi.class);
+            priceText = view.findViewById(R.id.editText2);
+            placesList = new ArrayList<Integer>();
+            timeStart=view.findViewById(R.id.buttonSetStartTimeSeance);
+            timeEnd=view.findViewById(R.id.buttonSetEndTimeSeance);
+            timeStartTextView=view.findViewById(R.id.textView23);
+            timeEndTextView=view.findViewById(R.id.textView24);
+        }
+        catch (Exception ex){
+            Toast.makeText(getContext(), ex.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+    }
+    // отображаем диалоговое окно для выбора времени
+    TimePickerDialog.OnTimeSetListener t=new TimePickerDialog.OnTimeSetListener() {
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            dateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            dateAndTime.set(Calendar.MINUTE, minute);
+            {
+                Integer hourTest = hourOfDay;
+                Integer minuteTest = minute;
+                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                selectedStartDate = date + " " + hourTest.toString() + ":" + minuteTest.toString();
+                try {
+                    time1 = format1.parse(selectedStartDate);
+                    Calendar instance = Calendar.getInstance();
+                    durationOfTheFilm+=20;
+                    instance.setTime(time1);
+                    instance.add(Calendar.MINUTE, durationOfTheFilm);
+                    Date newDate = instance.getTime();
+                    Date newCheckDate=format1.parse(date+" "+"23:59");
+                    Date morningDate=format1.parse(date+" "+"7:59");
+                    String dates = format1.format(instance.getTime());
+                    if(time1.after(morningDate)){
+                        if(newDate.before(newCheckDate)){
+                            timeStartTextView.setText(selectedStartDate);
+                            dialogWindow(dates);
+                        }
+                        else{
+                            Toast.makeText(getContext(), "Сеанс должен заканчиваться раньше 23.59", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else{
+                        Toast.makeText(getContext(), "Сеанс должен начинаться не раньше 8.00", Toast.LENGTH_SHORT).show();
+                    }
+
+
+
+                } catch (Exception ex) {
+                    Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+    TimePickerDialog.OnTimeSetListener s=new TimePickerDialog.OnTimeSetListener() {
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            dateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            dateAndTime.set(Calendar.MINUTE, minute);
+            {
+                Integer hourTest = hourOfDay;
+                Integer minuteTest = minute;
+                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                selectedEndDate = date + " " + hourTest.toString() + ":" + minuteTest.toString();
+                try {
+                    time2 = format1.parse(selectedEndDate);
+                    boolean b;
+                    if (time2.before(time1))
+                        b = true;
+                    else b = false;
+                    if(b){
+                        Toast.makeText(getContext(), "Нельзя выбрать время конца сеанса раньше его начала!", Toast.LENGTH_SHORT).show();
+                        selectedStartDate="";
+                    }
+                    else{
+                        Calendar instance = Calendar.getInstance();
+                        instance.setTime(time1); //устанавливаем дату, с которой будет производить операции
+                        instance.add(Calendar.MINUTE, durationOfTheFilm);
+                        String dates = format1.format(instance.getTime());
+                        Toast.makeText(getContext(), dates, Toast.LENGTH_SHORT).show();
+                        Date newDate = instance.getTime();
+                        timeEndTextView.setText(selectedEndDate);
+                    }
+                } catch (Exception ex) {
+                    Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+    private void setInitialDateTime() {
+        timeStartTextView.setText(DateUtils.formatDateTime(getContext(),
+                dateAndTime.getTimeInMillis(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
+                        | DateUtils.FORMAT_SHOW_TIME));
+    }
+    private void dialogWindow(String date){
+        new TTFancyGifDialog.Builder(getActivity())
+                .setTitle("Magnifisent")
+                .setMessage("С учетом начала сеанса и продолжительности фильма, а также 20 минут на подготовку к слудющему сеансу, установить время конца сеанса "+date+" ?")
+                .setPositiveBtnText("Ok")
+                .setPositiveBtnBackground("#22b573")
+                .setNegativeBtnText("Cancel")
+                .setNegativeBtnBackground("#c1272d")
+                .setGifResource(R.drawable.cinema2)      //pass your gif, png or jpg
+                .isCancellable(true)
+                .OnPositiveClicked(new TTFancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+                        selectedEndDate=date;
+                        timeEndTextView.setText(selectedEndDate);
+                    }
+                })
+                .OnNegativeClicked(new TTFancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+                    }
+                })
+                .build();
     }
 
 }

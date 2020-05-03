@@ -33,31 +33,15 @@ FragmentTransaction ft;
     final int REQUEST_CODE_GALLERY = 999;
     @Override
     public void onOpenFragment2(String nameCinema, String nameHall, Integer countPlaces,
-                                String nameFilm, String dateSeance, String timeSeance,
-                                String idHallSeance,String idFilmSeance) {
-       /* FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragmentPlaces);
-        if (fragment == null) {
-            fragment = new AddPlacesSeanceFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("nameCinema", nameCinema);
-            bundle.putString("nameHall", nameHall);
-            bundle.putString("nameFilm", nameFilm);
-            bundle.putInt("countPlaces",countPlaces);
-            fragment.setArguments(bundle);
-            fm.beginTransaction()
-                    .add(R.id.fragmentPlaces, fragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit();
-        }*/
+                                String nameFilm,Integer duration, String dateSeance, String idHallSeance,String idFilmSeance) {
         currentFragment = new AddPlacesSeanceFragment();
         Bundle bundle = new Bundle();
         bundle.putString("nameCinema", nameCinema);
         bundle.putString("nameHall", nameHall);
         bundle.putString("nameFilm", nameFilm);
+        bundle.putInt("durationFilm",duration);
         bundle.putInt("countPlaces",countPlaces);
         bundle.putString("dateSeance", dateSeance);
-        bundle.putString("timeSeance", timeSeance);
         bundle.putString("idHallSeance", idHallSeance);
         bundle.putString("idFilmSeance", idFilmSeance);
         currentFragment.setArguments(bundle);

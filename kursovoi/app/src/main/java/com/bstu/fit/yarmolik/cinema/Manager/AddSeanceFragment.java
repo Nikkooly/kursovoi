@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,12 +55,13 @@ public class AddSeanceFragment extends Fragment {
     private IMyApi iMyApi;
     List<CinemaResponce> cinema;
     List<HallResponse> hall;
+    TextView dataTextView;
     List<FilmResponse> posts;
     private ArrayList<String> list, listHall, listFilm;
     private ArrayList<String> idList, idListHall, idListFilm;
-    private ArrayList<Integer> countOfPlaces;
-    private String chooseCinema="",chooseTime="",chooseFilm="",chooseHall="";
-    private MaterialSpinner cinemaSpinner,hallSpinner,filmSpinner,timeSpinner;
+    private ArrayList<Integer> countOfPlaces,durationOfTheFilm;
+    private String chooseCinema="",chooseFilm="",chooseHall="";
+    private MaterialSpinner cinemaSpinner,hallSpinner,filmSpinner;
     CompositeDisposable compositeDisposable;
     Button setDate,addSeanceButton;
     private Integer yearCalendar,month,day;
@@ -76,10 +78,10 @@ public class AddSeanceFragment extends Fragment {
         loadFilms();
         cinemaSpinner.setItems(list);
         filmSpinner.setItems(listFilm);
-        timeSpinner.setItems("9:00", "11:00", "13:00", "15:00", "17:00","19:00","21:00");
         cinemaSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                listHall.clear();
                 loadHallInfo(idList.get(list.indexOf(item)));
                 hallSpinner.setItems(listHall);
                 chooseCinema=item;
@@ -95,12 +97,7 @@ public class AddSeanceFragment extends Fragment {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 chooseFilm=item;
-            }
-        });
-        timeSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                chooseTime=item;
+                //Toast.makeText(getContext(),durationOfTheFilm.get(listFilm.indexOf(chooseFilm)).toString(),Toast.LENGTH_SHORT).show();
             }
         });
         setDate.setOnClickListener(new View.OnClickListener() {
@@ -117,9 +114,9 @@ public class AddSeanceFragment extends Fragment {
         addSeanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!chooseTime.equals("") && !chooseCinema.equals("") && !chooseFilm.equals("") && !chooseHall.equals("") && !date.equals("")){
+                if(!chooseCinema.equals("") && !chooseFilm.equals("") && !chooseHall.equals("") && !date.equals("")){
                     Date currentDate = new Date();
-                    DateFormat dateFormat = new SimpleDateFormat("dd.M.yyyy", Locale.getDefault());
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     String dateText = dateFormat.format(currentDate);
                     try {
                         Date date1 = dateFormat.parse(dateText);
@@ -129,8 +126,8 @@ public class AddSeanceFragment extends Fragment {
                                     chooseHall,
                                     countOfPlaces.get(listHall.indexOf(chooseHall)),
                                     chooseFilm,
+                                    durationOfTheFilm.get(listFilm.indexOf(chooseFilm)),
                                     date,
-                                    chooseTime,
                                     idListHall.get(listHall.indexOf(chooseHall)),
                                     idListFilm.get(listFilm.indexOf(chooseFilm)));
                         }
@@ -154,13 +151,14 @@ public class AddSeanceFragment extends Fragment {
         cinemaSpinner=view.findViewById(R.id.spinnerSelectCinemaOfSeance);
         hallSpinner=view.findViewById(R.id.spinnerSelectHallOfSeance);
         filmSpinner=view.findViewById(R.id.spinnerSelectFilmOfSeance);
-        timeSpinner=view.findViewById(R.id.spinnerSelectTimeOfSeance);
+        dataTextView=view.findViewById(R.id.textView21);
         setDate=view.findViewById(R.id.dateButton);
         addSeanceButton=view.findViewById(R.id.addSeance);
         list= new ArrayList<String>();
         idList=new ArrayList<String>();
         listHall= new ArrayList<String>();
         idListHall=new ArrayList<String>();
+        durationOfTheFilm=new ArrayList<Integer>();
         listFilm=new ArrayList<String>();
         idListFilm=new ArrayList<String>();
         compositeDisposable=new CompositeDisposable();
@@ -182,7 +180,11 @@ public class AddSeanceFragment extends Fragment {
             Integer monthCalendar = calendar.get(Calendar.MONTH) + 1;
             Integer dayCalendar = calendar.get(Calendar.DAY_OF_MONTH);
             Integer yearCalendar = calendar.get(Calendar.YEAR);
-            date = dayCalendar.toString() + "." + monthCalendar.toString() + "." + yearCalendar.toString();
+            //date = dayCalendar.toString() + "." + monthCalendar.toString() + "." + yearCalendar.toString();
+            SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            date = format1.format(calendar.getTime());
+            dataTextView.setText(date);
+
         }
     };
     private void loadCinema(){
@@ -209,16 +211,22 @@ public class AddSeanceFragment extends Fragment {
             @Override
             public void onResponse(Call<List<HallResponse>> call, Response<List<HallResponse>> response) {
                 hall=response.body();
-                for(HallResponse h : hall){
-                    listHall.add(h.getName());
-                    idListHall.add(h.getId());
-                    countOfPlaces.add(h.getPlaces());
+                if(!hall.toString().equals("Зал не найден")) {
+                    for (HallResponse h : hall) {
+                        listHall.add(h.getName());
+                        idListHall.add(h.getId());
+                        countOfPlaces.add(h.getPlaces());
+                    }
+                }
+                else{
+                    Toast.makeText(getContext(), "Залов в данном кинотеатре не добавлено", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<HallResponse>> call, Throwable t) {
-
+                //Toast.makeText(getContext(),t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Залов в данном кинотеатре не добавлено", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -235,6 +243,7 @@ public class AddSeanceFragment extends Fragment {
                 for(FilmResponse post : posts){
                     listFilm.add(post.getName());
                     idListFilm.add(post.getId());
+                    durationOfTheFilm.add(post.getDuration());
                 }
             }
             @Override

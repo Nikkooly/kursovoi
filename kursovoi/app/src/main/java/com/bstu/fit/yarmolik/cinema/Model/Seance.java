@@ -1,15 +1,15 @@
 package com.bstu.fit.yarmolik.cinema.Model;
 
 public class Seance {
-    private String Date;
-    private String Time;
+    private String StartTime;
     private String HallId;
     private String FilmId;
-    public Seance(String date, String time, String hallId, String filmId){
-        Date=date;
-        Time=time;
+    private String EndTime;
+    public Seance(String start_time, String hallId, String filmId,String end_time){
+        StartTime=start_time;
         HallId=hallId;
         FilmId=filmId;
+        EndTime=end_time;
     }
 
     public void setHallId(String hallId) {
@@ -28,22 +28,19 @@ public class Seance {
         return HallId;
     }
 
-    public String getDate() {
-        return Date;
+    public String getEndTime() {
+        return EndTime;
     }
 
-    public String getTime() {
-        return Time;
+    public void setEndTime(String endTime) {
+        EndTime = endTime;
     }
 
-
-
-    public void setDate(String date) {
-        Date = date;
+    public String getStartTime() {
+        return StartTime;
     }
 
-
-    public void setTime(String time) {
-        Time = time;
+    public void setStartTime(String startTime) {
+        StartTime = startTime;
     }
 }
