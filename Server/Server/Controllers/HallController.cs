@@ -25,13 +25,17 @@ namespace Server.Controllers
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            if (cinemaContext.CinemaInfo.Any(x => x.Id.ToString().Equals(id)))
+            if (cinemaContext.HallInfo.Any(x => x.CinemaId.ToString().Equals(id)))
             {
                 try
                 {
+                    CinemaInfo cinemaInfo = new CinemaInfo();
+                    HallInfo hallInfo = new HallInfo();
                     return JsonConvert.SerializeObject(
-                        cinemaContext.HallInfo
-                        .Select(x => new { x.Id, x.Name, x.Places}));
+                   cinemaContext.HallInfo
+                   .Select(x => new { x.Id, x.Name, x.Places, x.CinemaId }));
+                       //.Where(i => i.CinemaId.Equals(id)));                  
+                   
                 }
                 catch (Exception ex)
                 {

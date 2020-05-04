@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,12 @@ namespace Server.Controllers
     {
         CinemaContext cinemaContext = new CinemaContext();
         // GET: api/<controller>
-        /* [HttpGet]
+         [HttpGet]
          public IEnumerable<string> Get()
          {
              return new string[] { "value1", "value2" };
          }
-
+        /*
          // GET api/<controller>/5
          [HttpGet("{id}")]
          public string Get(int id)
@@ -30,14 +31,32 @@ namespace Server.Controllers
          */
         // POST api/<controller>
         [HttpPost]
-        public string Post([FromBody]Seance value)
+        public string Post([FromBody]SeanceData value)
         {
-            if (!cinemaContext.Seance.Any(seance => seance.Time.Equals(value.Time) && seance.Date.Equals(value.Date) && seance.FilmId.Equals(value.FilmId) && seance.HallId.Equals(value.HallId)))
+            Seance seance = new Seance();
+            Guid guid = Guid.NewGuid();
+            DateTime startDate = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm", null);
+            DateTime endDate = DateTime.ParseExact(value.EndTime, "yyyy-MM-dd HH:mm", null);
+            /*DateTime dateToCheck = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm", null);
+            if(dateToCheck.IsInRange(cinemaContext.Seance.StartTime, seance.EndTime)==true)
             {
-                Seance seance = new Seance();
-                Guid guid = Guid.NewGuid();
-                seance.Date = value.Date;
-                seance.Time = value.Time;
+                return JsonConvert.SerializeObject("На данное время уже есть сеанс");
+            }
+            else
+            {
+                return JsonConvert.SerializeObject("Ok");
+            } */
+            if (DbFunctions.FunctionDate(startDate, endDate))
+            {
+                return "Ok";
+            }
+            else
+            {
+                return "ne Ok";
+            }
+           
+               /* seance.StartTime = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm", null); 
+                seance.EndTime = DateTime.ParseExact(value.EndTime, "yyyy-MM-dd HH:mm", null);
                 seance.HallId = value.HallId;
                 seance.FilmId = value.FilmId;
                 seance.Id = guid;
@@ -50,12 +69,7 @@ namespace Server.Controllers
                 catch (Exception ex)
                 {
                     return JsonConvert.SerializeObject(ex.Message);
-                }
-            }
-            else
-            {
-                return JsonConvert.SerializeObject("Сеанс уже существует!");
-            }
+                }*/
         }
         // PUT api/<controller>/5
         [HttpPut("{id}")]
@@ -67,6 +81,34 @@ namespace Server.Controllers
         [HttpDelete("{id}")]
         public void Delete(string id)
         {
+        }
+    }
+    /*public static class DateTimeExtensions
+    {
+        public static bool IsInRange(this DateTime dateToCheck, DateTime startDate, DateTime endDate)
+        {
+            return dateToCheck >= startDate && dateToCheck < endDate;
+        }
+    }*/
+    public static class DbFunctions
+    {
+        static int resultStartDate = 0;
+        static int resultEndDate = 0;
+        public static bool FunctionDate(DateTime startTime, DateTime endTime)
+        {
+          
+            using (var db = new CinemaContext())
+            {
+                int resultStartDate = db.Seance.Count(p => startTime >p.StartTime && startTime<p.EndTime);
+            }
+            if (resultStartDate == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

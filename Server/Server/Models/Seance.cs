@@ -11,10 +11,10 @@ namespace Server.Models
         }
 
         public Guid Id { get; set; }
-        public string Date { get; set; }
-        public string Time { get; set; }
+        public DateTime StartTime { get; set; }
         public Guid HallId { get; set; }
         public Guid FilmId { get; set; }
+        public DateTime EndTime { get; set; }
 
         public virtual FilmInfo Film { get; set; }
         public virtual HallInfo Hall { get; set; }

@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Server.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace Server.Controllers
+{
+    [Route("api/[controller]")]
+    public class CheckController : Controller
+    {
+        CinemaContext cinemaContext = new CinemaContext();
+
+        // POST api/<controller>
+        [HttpPost]
+        public string Post([FromBody]Seance value)
+        {
+
+            if (cinemaContext.Seance.Any(seance => seance.FilmId.Equals(value.FilmId)))
+            {
+                return "OK";
+            }
+            else
+            {
+                return JsonConvert.SerializeObject("Сеансы на данный фильм отсутствует");
+            }
+        }
+    }
+}

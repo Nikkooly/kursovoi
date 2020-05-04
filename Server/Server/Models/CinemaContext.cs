@@ -63,9 +63,7 @@ namespace Server.Models
                     .HasColumnName("id")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Country)
-                    .HasColumnName("country")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Country).HasColumnName("country");
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
@@ -75,8 +73,7 @@ namespace Server.Models
 
                 entity.Property(e => e.Genre)
                     .IsRequired()
-                    .HasColumnName("genre")
-                    .HasMaxLength(50);
+                    .HasColumnName("genre");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -174,19 +171,17 @@ namespace Server.Models
                     .HasColumnName("id")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Date)
-                    .IsRequired()
-                    .HasColumnName("date")
-                    .HasMaxLength(20);
+                entity.Property(e => e.EndTime)
+                    .HasColumnName("end_time")
+                    .HasColumnType("smalldatetime");
 
                 entity.Property(e => e.FilmId).HasColumnName("film_id");
 
                 entity.Property(e => e.HallId).HasColumnName("hall_id");
 
-                entity.Property(e => e.Time)
-                    .IsRequired()
-                    .HasColumnName("time")
-                    .HasMaxLength(10);
+                entity.Property(e => e.StartTime)
+                    .HasColumnName("start_time")
+                    .HasColumnType("smalldatetime");
 
                 entity.HasOne(d => d.Film)
                     .WithMany(p => p.Seance)
