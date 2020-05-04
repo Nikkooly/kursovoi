@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Server.Models;
 
@@ -33,43 +34,48 @@ namespace Server.Controllers
         [HttpPost]
         public string Post([FromBody]SeanceData value)
         {
+            int result = 0;
             Seance seance = new Seance();
             Guid guid = Guid.NewGuid();
-            DateTime startDate = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm", null);
-            DateTime endDate = DateTime.ParseExact(value.EndTime, "yyyy-MM-dd HH:mm", null);
-            /*DateTime dateToCheck = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm", null);
-            if(dateToCheck.IsInRange(cinemaContext.Seance.StartTime, seance.EndTime)==true)
+            DateTime startDate = DateTime.ParseExact(value.StartTime.Replace(' ','T'), "yyyy-MM-ddTHH:mm:ss", null);
+            DateTime endDate = DateTime.ParseExact(value.EndTime.Replace(' ', 'T'), "yyyy-MM-ddTHH:mm:ss", null);
+            using (var db = new CinemaContext())
             {
-                return JsonConvert.SerializeObject("На данное время уже есть сеанс");
+               result = db.Seance.Count(p => startDate > p.StartTime && startDate < p.EndTime);
             }
+            /*using (CinemaContext db = new CinemaContext())
+            {
+                //Microsoft.Data.SqlClient.SqlParameter paramOne = new Microsoft.Data.SqlClient.SqlParameter("@startDate", startDate);
+                Microsoft.Data.SqlClient.SqlParameter paramOne = new Microsoft.Data.SqlClient.SqlParameter("@startDate", "2020-05-13T10:32:00");
+                //Microsoft.Data.SqlClient.SqlParameter paramTwo = new Microsoft.Data.SqlClient.SqlParameter("@endDate", endDate);
+                Microsoft.Data.SqlClient.SqlParameter paramTwo = new Microsoft.Data.SqlClient.SqlParameter("@endDate", "2020-05-13T11:32:00");
+                result = db.Database.   //ExecuteSqlRaw($"SELECT [dbo].[CheckSeanceData]({0},{1})", "2020-05-13T10:32:00", "2020-05-13T10:32:00");
+            }*/
+            if (result == 0)
+            {
+                return "ok";
+            }
+
             else
             {
-                return JsonConvert.SerializeObject("Ok");
-            } */
-            if (DbFunctions.FunctionDate(startDate, endDate))
-            {
-                return "Ok";
+                return "ne ok";
             }
-            else
-            {
-                return "ne Ok";
-            }
-           
-               /* seance.StartTime = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm", null); 
-                seance.EndTime = DateTime.ParseExact(value.EndTime, "yyyy-MM-dd HH:mm", null);
-                seance.HallId = value.HallId;
-                seance.FilmId = value.FilmId;
-                seance.Id = guid;
-                try
-                {
-                    cinemaContext.Add(seance);
-                    cinemaContext.SaveChanges();
-                    return guid.ToString();
-                }
-                catch (Exception ex)
-                {
-                    return JsonConvert.SerializeObject(ex.Message);
-                }*/
+
+            /* seance.StartTime = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm", null); 
+             seance.EndTime = DateTime.ParseExact(value.EndTime, "yyyy-MM-dd HH:mm", null);
+             seance.HallId = value.HallId;
+             seance.FilmId = value.FilmId;
+             seance.Id = guid;
+             try
+             {
+                 cinemaContext.Add(seance);
+                 cinemaContext.SaveChanges();
+                 return guid.ToString();
+             }
+             catch (Exception ex)
+             {
+                 return JsonConvert.SerializeObject(ex.Message);
+             }*/
         }
         // PUT api/<controller>/5
         [HttpPut("{id}")]
@@ -90,25 +96,5 @@ namespace Server.Controllers
             return dateToCheck >= startDate && dateToCheck < endDate;
         }
     }*/
-    public static class DbFunctions
-    {
-        static int resultStartDate = 0;
-        static int resultEndDate = 0;
-        public static bool FunctionDate(DateTime startTime, DateTime endTime)
-        {
-          
-            using (var db = new CinemaContext())
-            {
-                int resultStartDate = db.Seance.Count(p => startTime >p.StartTime && startTime<p.EndTime);
-            }
-            if (resultStartDate == 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
+   
 }
