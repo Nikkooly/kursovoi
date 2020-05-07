@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bstu.fit.yarmolik.cinema.Adapters.MyAdapter;
+import com.bstu.fit.yarmolik.cinema.CheckInternetConnection;
 import com.bstu.fit.yarmolik.cinema.ModelAdapter.CinemaModel;
 import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
@@ -33,6 +34,9 @@ public class CinemaFragment extends Fragment {
     private RecyclerView recyclerView;
     private MyAdapter carAdapter;
     private IMyApi iMyApi;
+    private  Integer roleId;
+    CheckInternetConnection checkInternetConnection;
+    public boolean checkInternetState;
     private List<CinemaResponce> cinema;
     private ArrayList<String> nameList;
     private ArrayList<String> idList;
@@ -45,12 +49,20 @@ public class CinemaFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_cinema, container, false);
         recyclerView=(RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         init(view);
-        loadCinema();
-
-        for(int i=0;i<4;i++) {
-
+        Bundle arguments = getActivity().getIntent().getExtras();
+        roleId=arguments.getInt("userRole");
+        checkInternetState=arguments.getBoolean("stateInternetConnection");
+        checkInternetConnection=new CheckInternetConnection();
+        if(checkInternetConnection.isOnline(getContext())) {
+            checkInternetState=true;
+            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            loadCinema();
+        }
+        else{
+            checkInternetState=false;
+            Toast.makeText(getContext(), "Нет подключения", Toast.LENGTH_LONG).show();
         }
 
         return view;

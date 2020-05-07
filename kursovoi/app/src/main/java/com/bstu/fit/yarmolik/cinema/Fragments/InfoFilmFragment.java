@@ -77,6 +77,7 @@ public class InfoFilmFragment extends Fragment implements OnFragmentBookListener
                                 if(s.equals("OK")){
                                     Intent intent=new Intent(getContext(), AddInfoTicket.class);
                                     intent.putExtra("idFilmFragment",idFilmInfo);
+                                    intent.putExtra("posterFilmFragment",posterFilm);
                                    startActivity(intent);
                                 }
                                 else{

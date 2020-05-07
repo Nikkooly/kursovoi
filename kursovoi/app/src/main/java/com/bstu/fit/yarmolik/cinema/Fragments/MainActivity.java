@@ -6,6 +6,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bstu.fit.yarmolik.cinema.CheckInternetConnection;
 import com.bstu.fit.yarmolik.cinema.Fragments.CinemaFragment;
 import com.bstu.fit.yarmolik.cinema.Fragments.FilmFragment;
 import com.bstu.fit.yarmolik.cinema.Fragments.FragmentMore;
@@ -50,17 +53,18 @@ SliderFragment sliderFragment;
     public List<FilmResponse> film;
     public ArrayList<String> nameList,countryList,descriptionList,posterList,genreList,idList;
     public ArrayList<Integer> durationList,yearList;
-    CompositeDisposable compositeDisposable;
     private BottomNavigationView bottomNavigationView;
+    private boolean stateInternet;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         init();
         iMyApi= RetrofitClient.getInstance().create(IMyApi.class);
-        //getFilms();
-        //Toast.makeText(this,nameList.get(0),Toast.LENGTH_SHORT).show();
         ft = getSupportFragmentManager().beginTransaction();
         currentFragment = new SliderFragment();
         ft.replace(R.id.container, currentFragment);

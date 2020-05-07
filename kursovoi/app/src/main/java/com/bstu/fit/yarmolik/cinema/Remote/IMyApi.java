@@ -14,11 +14,8 @@ import com.bstu.fit.yarmolik.cinema.Responces.HallResponse;
 
 import java.util.List;
 
-import  io.reactivex.observers.DefaultObserver;
 import io.reactivex.Observable;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -65,4 +62,6 @@ public interface IMyApi {
     Observable<String> addTickets(@Body Tickets tickets);
     @POST("api/check")
     Observable<String> checkSeance(@Body CheckSeance check);
+    @GET("api/seance/{id}")
+    Call<List<CinemaResponce>> getCinemaId(@Path("id") String id);
 }

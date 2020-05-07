@@ -2,6 +2,7 @@ package com.bstu.fit.yarmolik.cinema.Manager;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,8 @@ import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
 import com.bstu.fit.yarmolik.cinema.Responces.HallResponse;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -55,10 +58,13 @@ private Integer durationOfTheFilm;
 private String selectedStartDate="",selectedEndDate="";
 private String timeCheckOne, timeCheckTwo;
 private Date time1,time2;
+private Date newDate;
 private Integer countOfPlaces;
+private  Integer duration;
 private Button addPlaces,timeStart,timeEnd;
 private ArrayList<Integer> placesList;
 private List<HallResponse> hallResponse;
+private FloatingActionButton fab;
 private String select="All";
 private EditText priceText;
 Calendar dateAndTime=Calendar.getInstance();
@@ -77,6 +83,22 @@ RadioGroup radioGroup;
        hallName.setText(hall);
        durationTextView.setText(durationOfTheFilm.toString()+" минут");
       countPlaces.setText(countOfPlaces.toString());
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CharSequence[] items = {"2020-02-11 11:11 \n 2020-02-11 11:11", "Bar", "Baz"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Список сеансов в этом зале сегодня");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        // Do something with the selection
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
       timeStart.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
@@ -113,33 +135,36 @@ RadioGroup radioGroup;
       addPlaces.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-
-              AlertDialog alertDialog = new SpotsDialog.Builder()
-                      .setContext(getContext())
-                      .build();
-              alertDialog.show();
-              Seance seance=new Seance(date,idHallSeance,idHallFilm,date);
+              if(!selectedStartDate.equals("") && !selectedEndDate.equals("") && !priceText.getText().toString().equals("")){
+                  AlertDialog alertDialog = new SpotsDialog.Builder()
+                          .setContext(getContext())
+                          .build();
+                  alertDialog.show();
+              Seance seance = new Seance(selectedStartDate, idHallSeance, idHallFilm, selectedEndDate);
               compositeDisposable.add(iMyApi.addSeance(seance)
                       .subscribeOn(Schedulers.io())
                       .observeOn(AndroidSchedulers.mainThread())
                       .subscribe(new Consumer<String>() {
                           @Override
                           public void accept(String s) throws Exception {
-                              Toast.makeText(getContext(),s,Toast.LENGTH_SHORT).show();
-                              if(!s.equals("Сеанс уже существует")){
-                                  if(!priceText.getText().toString().equals("")){
-                                      Double price=Double.parseDouble(priceText.getText().toString());
-                                      if(select.equals("All")){
-                                          for(int i=1;i<=countOfPlaces;i++){
-                                              addTicketsInfo(i,price,s);
+                              Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+                              if (!s.equals("Сеанс уже существует")) {
+                                  if (!priceText.getText().toString().equals("")) {
+                                      Double price = Double.parseDouble(priceText.getText().toString());
+                                      if (select.equals("All")) {
+                                          for (int i = 1; i <= countOfPlaces; i++) {
+                                              addTicketsInfo(i, price, s);
                                           }
-                                      }
-                                      else{
-                                          for(int i=1;i<=countOfPlaces;i+=2){
-                                              addTicketsInfo(i,price,s);
+                                      } else {
+                                          for (int i = 1; i <= countOfPlaces; i += 2) {
+                                              addTicketsInfo(i, price, s);
                                           }
                                       }
                                   }
+                                  alertDialog.dismiss();
+                                  Toast.makeText(getContext(), "Сеанс успешно добавлен", Toast.LENGTH_SHORT).show();
+                              }
+                              else{
                                   alertDialog.dismiss();
                               }
                           }
@@ -147,13 +172,16 @@ RadioGroup radioGroup;
                           @Override
                           public void accept(Throwable throwable) throws Exception {
                               alertDialog.dismiss();
-                              Toast.makeText(getContext(), throwable.getMessage(),Toast.LENGTH_SHORT).show();
+                              Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                           }
                       })
               );
-
-
           }
+          else
+              {
+                  Toast.makeText(getContext(), "Заполните поля!", Toast.LENGTH_SHORT).show();
+              }
+              }
       });
        return view;
     }
@@ -192,6 +220,7 @@ RadioGroup radioGroup;
             durationTextView=view.findViewById(R.id.textView27);
             buttonAll = view.findViewById(R.id.allPlaces);
             buttonHalf = view.findViewById(R.id.halfPlaces);
+            fab= view.findViewById(R.id.fab);
             radioGroup = view.findViewById(R.id.radios);
             compositeDisposable = new CompositeDisposable();
             iMyApi = RetrofitClient.getInstance().create(IMyApi.class);
@@ -212,31 +241,36 @@ RadioGroup radioGroup;
             dateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
             dateAndTime.set(Calendar.MINUTE, minute);
             {
+                Calendar instance = Calendar.getInstance();
                 Integer hourTest = hourOfDay;
                 Integer minuteTest = minute;
+
                 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 selectedStartDate = date + " " + hourTest.toString() + ":" + minuteTest.toString();
                 try {
                     time1 = format1.parse(selectedStartDate);
-                    Calendar instance = Calendar.getInstance();
-                    durationOfTheFilm+=20;
+                     duration=0;
+                     duration=durationOfTheFilm+20;
                     instance.setTime(time1);
-                    instance.add(Calendar.MINUTE, durationOfTheFilm);
-                    Date newDate = instance.getTime();
+                    instance.add(Calendar.MINUTE, duration);
+                    newDate= instance.getTime();
                     Date newCheckDate=format1.parse(date+" "+"23:59");
                     Date morningDate=format1.parse(date+" "+"7:59");
                     String dates = format1.format(instance.getTime());
                     if(time1.after(morningDate)){
                         if(newDate.before(newCheckDate)){
+                            selectedStartDate=format1.format(time1)+":00";
                             timeStartTextView.setText(selectedStartDate);
                             dialogWindow(dates);
                         }
                         else{
                             Toast.makeText(getContext(), "Сеанс должен заканчиваться раньше 23.59", Toast.LENGTH_SHORT).show();
+                            selectedStartDate="";
                         }
                     }
                     else{
                         Toast.makeText(getContext(), "Сеанс должен начинаться не раньше 8.00", Toast.LENGTH_SHORT).show();
+                        selectedStartDate="";
                     }
 
 
@@ -258,22 +292,23 @@ RadioGroup radioGroup;
                 selectedEndDate = date + " " + hourTest.toString() + ":" + minuteTest.toString();
                 try {
                     time2 = format1.parse(selectedEndDate);
-                    boolean b;
-                    if (time2.before(time1))
-                        b = true;
-                    else b = false;
-                    if(b){
+                    if (time2.before(time1)){
                         Toast.makeText(getContext(), "Нельзя выбрать время конца сеанса раньше его начала!", Toast.LENGTH_SHORT).show();
-                        selectedStartDate="";
+                        selectedEndDate="";
                     }
-                    else{
-                        Calendar instance = Calendar.getInstance();
-                        instance.setTime(time1); //устанавливаем дату, с которой будет производить операции
-                        instance.add(Calendar.MINUTE, durationOfTheFilm);
-                        String dates = format1.format(instance.getTime());
-                        Toast.makeText(getContext(), dates, Toast.LENGTH_SHORT).show();
-                        Date newDate = instance.getTime();
-                        timeEndTextView.setText(selectedEndDate);
+                    else
+                    {
+                        if(newDate.after(time2)){
+                            Toast.makeText(getContext(), "Нельзя выбрать время конца сеанса меньше его продолжительности!", Toast.LENGTH_SHORT).show();
+                            selectedEndDate="";
+                        }
+                        else{
+                            Calendar instance = Calendar.getInstance();
+                            instance.setTime(time2); //устанавливаем дату, с которой будет производить операции
+                            selectedEndDate=format1.format(instance.getTime())+":00";
+                            timeEndTextView.setText(selectedEndDate);
+                        }
+
                     }
                 } catch (Exception ex) {
                     Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
@@ -281,12 +316,6 @@ RadioGroup radioGroup;
             }
         }
     };
-    private void setInitialDateTime() {
-        timeStartTextView.setText(DateUtils.formatDateTime(getContext(),
-                dateAndTime.getTimeInMillis(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-                        | DateUtils.FORMAT_SHOW_TIME));
-    }
     private void dialogWindow(String date){
         new TTFancyGifDialog.Builder(getActivity())
                 .setTitle("Magnifisent")
@@ -300,13 +329,15 @@ RadioGroup radioGroup;
                 .OnPositiveClicked(new TTFancyGifDialogListener() {
                     @Override
                     public void OnClick() {
-                        selectedEndDate=date;
+                        selectedEndDate=date+":00";
                         timeEndTextView.setText(selectedEndDate);
                     }
                 })
                 .OnNegativeClicked(new TTFancyGifDialogListener() {
                     @Override
                     public void OnClick() {
+                        selectedEndDate="";
+                        timeEndTextView.setText("Время конца сеанса");
                     }
                 })
                 .build();

@@ -2,7 +2,11 @@ package com.bstu.fit.yarmolik.cinema;
 
 import android.animation.Animator;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -48,11 +52,13 @@ public class Login extends AppCompatActivity {
     Button btn_login;
     List<FilmResponse> posts;
     String response="";
+    public boolean stateInternet;
     private ProgressBar loadingProgressBar;
     private RelativeLayout rootView, afterAnimationView;
     IMyApi iMyApi;
     Intent intent;
     CompositeDisposable compositeDisposable;
+    CheckInternetConnection checkInternetConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,24 @@ public class Login extends AppCompatActivity {
                 bookITextView.setVisibility(GONE);
                 rootView.setBackgroundColor(ContextCompat.getColor(Login.this, R.color.btnColor));
                 startAnimation();
+                if(checkInternetConnection.isOnline(Login.this)){
+                    stateInternet=true;
+                }
+                else{
+                    stateInternet=false;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                    builder.setTitle("Важное сообщение!")
+                            .setMessage("Отсутствует подключение к интернету, многие функции будут не доступны. Включите интернет и перезайдите в приложение!")
+                            .setIcon(R.drawable.app_icon)
+                            .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // Закрываем окно
+                                    dialog.cancel();
+                                }
+                            });
+                    builder.create();
+                    builder.show();
+                }
             }
         }.start();
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -89,34 +113,42 @@ public class Login extends AppCompatActivity {
                 boolean checkLogin = loginValue.matches("^[a-zA-Z][a-zA-Z0-9-_\\.]{1,20}$");
                 boolean checkPassword = passwordValue.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$");
                 if (checkPassword == true && checkLogin == true) {
-                    AlertDialog alertDialog = new SpotsDialog.Builder()
-                            .setContext(Login.this)
-                            .build();
-                    alertDialog.show();
-                    LoginUser user = new LoginUser(login.getText().toString(), password.getText().toString());
-                    compositeDisposable.add(iMyApi.loginUser(user)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(s -> {
-                                alertDialog.dismiss();
-                                Toast.makeText(Login.this, s, Toast.LENGTH_LONG).show();
-                                Integer equal=1;
-                                Integer secondequal=2;
-                                if(s.toLowerCase().contains(equal.toString()))
-                                {
-                                    Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
-                                    intent=new Intent(Login.this, MainActivity.class);
-                                    startActivity(intent);
-                                }
-                                else if(s.toLowerCase().contains(secondequal.toString())){
-                                    intent=new Intent(Login.this, ManagerActivity.class);
-                                     startActivity(intent);
-                                }
-                            }, throwable -> {
-                                alertDialog.dismiss();
-                                Toast.makeText(Login.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                            })
-                    );
+                    if(stateInternet) {
+                        AlertDialog alertDialog = new SpotsDialog.Builder()
+                                .setContext(Login.this)
+                                .build();
+                        alertDialog.show();
+                        LoginUser user = new LoginUser(login.getText().toString(), password.getText().toString());
+                        compositeDisposable.add(iMyApi.loginUser(user)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(s -> {
+                                    alertDialog.dismiss();
+                                    Toast.makeText(Login.this, s, Toast.LENGTH_LONG).show();
+                                    Integer equal = 1;
+                                    Integer secondequal = 2;
+                                    if (s.toLowerCase().contains(equal.toString())) {
+                                        Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
+                                        intent = new Intent(Login.this, MainActivity.class);
+                                        intent.putExtra("userRole",equal);
+                                        intent.putExtra("stateInternetConnection",stateInternet);
+                                        startActivity(intent);
+                                    } else if (s.toLowerCase().contains(secondequal.toString())) {
+                                        if (checkInternetConnection.isOnline(Login.this)) {
+                                            intent = new Intent(Login.this, ManagerActivity.class);
+                                            startActivity(intent);
+                                        } else {
+                                        }
+                                    }
+                                }, throwable -> {
+                                    alertDialog.dismiss();
+                                    Toast.makeText(Login.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                })
+                        );
+                    }
+                    else{
+                        Toast.makeText(Login.this, "Нет интернета", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(Login.this, "Некорректные данные", Toast.LENGTH_SHORT).show();
                 }
@@ -125,6 +157,8 @@ public class Login extends AppCompatActivity {
     }
     public void Skip(View view){
         intent=new Intent(Login.this,MainActivity.class);
+        intent.putExtra("userRole",3);
+        intent.putExtra("stateInternetConnection",stateInternet);
         startActivity(intent);
     }
     public void SignUp(View view){
@@ -140,6 +174,7 @@ public class Login extends AppCompatActivity {
         login=findViewById(R.id.loginEditText);
         password=findViewById(R.id.passwordEditText);
         btn_login=findViewById(R.id.loginButton);
+        checkInternetConnection=new CheckInternetConnection();
     }
 
     private void startAnimation() {
