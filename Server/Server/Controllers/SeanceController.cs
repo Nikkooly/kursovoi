@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Server.Models;
@@ -17,66 +19,82 @@ namespace Server.Controllers
     {
         CinemaContext cinemaContext = new CinemaContext();
         // GET: api/<controller>
-         [HttpGet]
-         public IEnumerable<string> Get()
-         {
-             return new string[] { "value1", "value2" };
-         }
-        /*
-         // GET api/<controller>/5
-         [HttpGet("{id}")]
-         public string Get(int id)
-         {
-             return "value";
-         }
-         */
-        // POST api/<controller>
-        [HttpPost]
-        public string Post([FromBody]SeanceData value)
+        [HttpGet]
+        public IEnumerable<string> Get()
         {
-            int result = 0;
-            Seance seance = new Seance();
-            Guid guid = Guid.NewGuid();
-            DateTime startDate = DateTime.ParseExact(value.StartTime.Replace(' ','T'), "yyyy-MM-ddTHH:mm:ss", null);
-            DateTime endDate = DateTime.ParseExact(value.EndTime.Replace(' ', 'T'), "yyyy-MM-ddTHH:mm:ss", null);
+            return new string[] { "value1", "value2" };
+        }
+
+        // GET api/<controller>/5
+        [HttpGet("{id}")]
+        public List<CinemaInfoForTicket> Get(string id)
+         {
             using (var db = new CinemaContext())
             {
-               result = db.Seance.Count(p => startDate > p.StartTime && startDate < p.EndTime);
+                var seances = db.Seance.Where(x => x.FilmId == new Guid(id))
+                    .Join(
+                    db.HallInfo,
+                    s=>s.HallId,
+                    h=>h.Id,
+                    (s,h)=> h.CinemaId
+                   ).Distinct().ToList()
+                    .Join(
+                    db.CinemaInfo,
+                    h=>h,
+                    c=>c.Id,
+                    (h,c)=> new CinemaInfoForTicket() {
+                        Id=c.Id.ToString(),
+                        Name=c.Name,
+                        Adress=c.Adress
+                        }
+                    ).ToList();
+                return seances;
             }
-            /*using (CinemaContext db = new CinemaContext())
-            {
-                //Microsoft.Data.SqlClient.SqlParameter paramOne = new Microsoft.Data.SqlClient.SqlParameter("@startDate", startDate);
-                Microsoft.Data.SqlClient.SqlParameter paramOne = new Microsoft.Data.SqlClient.SqlParameter("@startDate", "2020-05-13T10:32:00");
-                //Microsoft.Data.SqlClient.SqlParameter paramTwo = new Microsoft.Data.SqlClient.SqlParameter("@endDate", endDate);
-                Microsoft.Data.SqlClient.SqlParameter paramTwo = new Microsoft.Data.SqlClient.SqlParameter("@endDate", "2020-05-13T11:32:00");
-                result = db.Database.   //ExecuteSqlRaw($"SELECT [dbo].[CheckSeanceData]({0},{1})", "2020-05-13T10:32:00", "2020-05-13T10:32:00");
-            }*/
-            if (result == 0)
-            {
-                return "ok";
-            }
-
-            else
-            {
-                return "ne ok";
-            }
-
-            /* seance.StartTime = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm", null); 
-             seance.EndTime = DateTime.ParseExact(value.EndTime, "yyyy-MM-dd HH:mm", null);
-             seance.HallId = value.HallId;
-             seance.FilmId = value.FilmId;
-             seance.Id = guid;
-             try
-             {
-                 cinemaContext.Add(seance);
-                 cinemaContext.SaveChanges();
-                 return guid.ToString();
-             }
-             catch (Exception ex)
-             {
-                 return JsonConvert.SerializeObject(ex.Message);
-             }*/
         }
+         
+        // POST api/<controller>
+        [HttpPost]
+        public async Task<string> Post([FromBody]SeanceData value)
+        {
+            Seance seance = new Seance();
+            Guid guid = Guid.NewGuid();
+            DateTime startDate = DateTime.ParseExact(value.StartTime.Replace(' ', 'T'), "yyyy-MM-ddTHH:mm:ss", null);
+            DateTime endDate = DateTime.ParseExact(value.EndTime.Replace(' ', 'T'), "yyyy-MM-ddTHH:mm:ss", null);
+            using var db = new CinemaContext();
+            {
+                if ((await db.Seance.ToListAsync())?.All(x=> startDate.CompareTo(x.StartTime) == -1 && endDate.CompareTo(x.StartTime) == -1
+                        || startDate.CompareTo(x.EndTime) == 1) == true)
+                {
+                    seance.StartTime = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm:ss", null);
+                    seance.EndTime = DateTime.ParseExact(value.EndTime, "yyyy-MM-dd HH:mm:ss", null);
+                    seance.HallId = value.HallId;
+                    seance.FilmId = value.FilmId;
+                    seance.Id = guid;
+                    try
+                    {
+                        cinemaContext.Add(seance);
+                        await cinemaContext.SaveChangesAsync();
+                        return guid.ToString();
+                    }
+                    catch (Exception ex)
+                    {
+                        return JsonConvert.SerializeObject(ex.Message);
+                    }
+                }
+                else
+                {
+                    return "Сеанс уже существует";
+                }
+            }
+
+        }
+
+        private static Expression<Func<Seance, bool>> CheckExistSeanceAtThisTime(DateTime startDate, DateTime endDate)
+        {
+            return x => startDate.CompareTo(x.StartTime) == 1 && startDate.CompareTo(x.EndTime) == -1
+                        && endDate.CompareTo(x.EndTime) == -1 && endDate.CompareTo(x.StartTime) == 1;
+    }
+
         // PUT api/<controller>/5
         [HttpPut("{id}")]
         public void Put(string id, [FromBody]string value)
@@ -88,13 +106,5 @@ namespace Server.Controllers
         public void Delete(string id)
         {
         }
-    }
-    /*public static class DateTimeExtensions
-    {
-        public static bool IsInRange(this DateTime dateToCheck, DateTime startDate, DateTime endDate)
-        {
-            return dateToCheck >= startDate && dateToCheck < endDate;
-        }
-    }*/
-   
+    }   
 }
