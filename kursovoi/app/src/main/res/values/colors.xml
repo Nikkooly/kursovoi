@@ -12,4 +12,5 @@
     <color name="menuDownColor">#FFFFFF</color>
     <color name="textColorFragment">#000000</color>
     <color name="titleColor">#F5821E</color>
+    <color name="availableColor">#32CD32</color>
 </resources>

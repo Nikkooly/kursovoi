@@ -106,7 +106,7 @@ private HorizontalCalendar horizontalCalendar;
                             }
                             seanceAdapter=new SeanceAdapter(seanceModels);
                             recyclerView.setAdapter(seanceAdapter);
-                            Toast.makeText(AddInfoTicket.this, startTime.get(0), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(AddInfoTicket.this, startTime.get(0), Toast.LENGTH_LONG).show();
                         }
                         else{
                             recyclerView.setVisibility(View.GONE);
