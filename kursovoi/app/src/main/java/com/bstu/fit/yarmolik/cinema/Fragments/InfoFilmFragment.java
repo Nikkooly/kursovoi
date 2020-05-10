@@ -30,17 +30,19 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import me.grantland.widget.AutofitTextView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
 public class InfoFilmFragment extends Fragment implements OnFragmentBookListener {
-    private TextView nameFilm,genreFilm,yearFilm,descriptionFilm,durationFilm,countryFilm;
+    private TextView genreFilm,yearFilm,descriptionFilm,durationFilm,countryFilm;
     private ImageView imageView;
     FragmentTransaction ft;
     private String idFilmInfo="",posterFilm;
     private IMyApi iMyApi;
+    private AutofitTextView nameFilm;
     Button button;
     private OnFragmentBookListener onFragmentBookListener;
     private CompositeDisposable compositeDisposable;

@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Fragments.AddInfoTicket"></activity>
+        <activity android:name=".Fragments.SelectTickets"></activity>
+        <activity android:name=".Fragments.AddInfoTicket" />
         <activity android:name=".Manager.ManagerActivity" />
         <activity android:name=".Registration" />
         <activity android:name=".Login">

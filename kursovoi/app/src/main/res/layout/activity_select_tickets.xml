@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.SelectPlacesFragment">
+
+
+    <ImageView
+        android:id="@+id/moviePosterImageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="20dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/theater"
+        app:layout_constraintBottom_toTopOf="@+id/screenRectangle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/movieTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/moviePosterImageView"
+        app:layout_constraintTop_toTopOf="@id/moviePosterImageView"
+        app:layout_constraintBottom_toBottomOf="@id/moviePosterImageView"
+        app:layout_constraintRight_toRightOf="@id/moviePosterImageView"
+        android:layout_margin="1dp"
+        android:gravity="center"
+        android:text="Фильм"
+        android:textColor="#FFFFFF"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/movieHourTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:gravity="center"
+        android:text="Время"
+        android:textColor="#BCD8D8D8"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="@id/moviePosterImageView"
+        app:layout_constraintRight_toRightOf="@id/moviePosterImageView"
+        app:layout_constraintTop_toBottomOf="@id/movieTitleTextView" />
+
+    <View
+        android:id="@+id/screenRectangle"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/screen_rectangle"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moviePosterImageView" />
+
+    <TextView
+        android:id="@+id/screen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="30dp"
+        android:text="Экран"
+        app:layout_constraintBottom_toTopOf="@+id/gridPlaces"
+        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/screenRectangle" />
+
+    <GridView
+        android:id="@+id/gridPlaces"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:columnWidth="40dp"
+        android:gravity="center"
+        android:horizontalSpacing="5dp"
+        android:numColumns="10"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="2dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/screen" />
+
+    <TextView
+        android:id="@+id/placesInfoTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:drawableLeft="@drawable/ic_stop_black_24dp"
+        android:drawableTint="@color/titleColor"
+        android:paddingTop="10dp"
+        android:text="выбранные"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridPlaces" />
+
+    <TextView
+        android:id="@+id/placesInfoTextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="40dp"
+        android:drawableLeft="@drawable/ic_stop_black_24dp"
+        android:paddingTop="10dp"
+        android:text="доступные"
+        app:layout_constraintRight_toLeftOf="@+id/placesInfoTextView2"
+        app:layout_constraintTop_toBottomOf="@+id/gridPlaces" />
+
+    <TextView
+        android:id="@+id/placesInfoTextView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="16dp"
+        android:drawableLeft="@drawable/ic_stop_black_24dp"
+        android:drawableTint="@android:color/darker_gray"
+        android:paddingTop="10dp"
+        android:text="проданные"
+        app:layout_constraintLeft_toRightOf="@+id/placesInfoTextView2"
+        app:layout_constraintTop_toBottomOf="@+id/gridPlaces" />
+
+    <Button
+        android:id="@+id/reservTicket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="163dp"
+        android:layout_marginBottom="16dp"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

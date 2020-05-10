@@ -206,6 +206,7 @@ public class AddSeanceFragment extends Fragment {
         });
     }
     private void loadHallInfo(String id){
+
         Call<List<HallResponse>> call =iMyApi.getHallInfo(id);
         call.enqueue(new Callback<List<HallResponse>>() {
             @Override

@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:autofit="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorBackground"
     android:orientation="vertical"
     android:id="@+id/ssl"
     xmlns:android="http://schemas.android.com/apk/res/android">
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="3dp"
     android:layout_marginTop="3dp"
     android:layout_marginRight="3dp"
     android:layout_marginBottom="3dp"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/fragmentPlaces"
     android:layout_height="match_parent"
@@ -32,7 +31,7 @@
 
     <TextView
         android:id="@+id/descriptionInfoTextView"
-        android:layout_width="376dp"
+        android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="30dp"
@@ -58,9 +57,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descriptionInfoTextView" />
 
-    <TextView
+    <me.grantland.widget.AutofitTextView
         android:id="@+id/nameInfoTextView"
-        android:layout_width="168dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="16dp"
+        android:maxLines="2"
+        android:singleLine="true"
+        android:text="Имя фильма"
+        android:textSize="17dp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent"
+        autofit:minTextSize="13dp"
+        tools:ignore="MissingConstraints" />
+
+   <!-- <TextView
+        android:id="@+id/nameInfoTextView"
+        android:layout_width="wrap_content"
         android:textSize="17dp"
         android:textColor="@color/textColorFragment"
         android:layout_height="24dp"
@@ -70,7 +85,7 @@
         android:text="Имя фильма"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />-->
 
     <TextView
         android:id="@+id/genreInfoTextView"
@@ -83,6 +98,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/nameInfoTextView" />
+
 
     <TextView
         android:id="@+id/countryInfoTextView"
