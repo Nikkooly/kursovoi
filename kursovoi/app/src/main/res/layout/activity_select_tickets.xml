@@ -53,39 +53,40 @@
         android:id="@+id/placesInfoTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="38dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="43dp"
         android:drawableLeft="@drawable/ic_stop_black_24dp"
         android:drawableTint="@color/titleColor"
         android:paddingTop="10dp"
         android:text="выбранные"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/placesInfoTextView3"
+        app:layout_constraintStart_toEndOf="@+id/placesInfoTextView1"
         app:layout_constraintTop_toBottomOf="@+id/gridPlaces" />
 
     <TextView
         android:id="@+id/placesInfoTextView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginRight="40dp"
         android:drawableLeft="@drawable/ic_stop_black_24dp"
         android:paddingTop="10dp"
         android:text="доступные"
-        app:layout_constraintRight_toLeftOf="@+id/placesInfoTextView2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gridPlaces" />
 
     <TextView
         android:id="@+id/placesInfoTextView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:drawableLeft="@drawable/ic_stop_black_24dp"
         android:drawableTint="@android:color/darker_gray"
         android:paddingTop="10dp"
         android:text="проданные"
-        app:layout_constraintLeft_toRightOf="@+id/placesInfoTextView2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gridPlaces" />
 
     <View

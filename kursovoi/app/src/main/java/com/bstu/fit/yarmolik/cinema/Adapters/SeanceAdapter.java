@@ -23,6 +23,9 @@ public class SeanceAdapter extends RecyclerView.Adapter<SeanceAdapter.SeanceView
     private ArrayList<SeanceModel> list;
     private int counter = 0;
     public static String idSeance="";
+    public static String timeStartSeance="";
+    public static String timeEndSeance="";
+    public static String hallDataSeance="";
     public SeanceAdapter(ArrayList<SeanceModel> seanceModels){ list=seanceModels;}
     public class SeanceViewHolder extends RecyclerView.ViewHolder{
         TextView hall,startTime,endTime;
@@ -31,6 +34,7 @@ public class SeanceAdapter extends RecyclerView.Adapter<SeanceAdapter.SeanceView
         Button addTicket;
         public SeanceViewHolder(View view){
             super(view);
+            idSeance="";
             hall=view.findViewById(R.id.hallSTextView);
             linearLayout=view.findViewById(R.id.linearCardLayout);
             startTime=view.findViewById(R.id.startSTimeTextView);
@@ -50,10 +54,14 @@ public class SeanceAdapter extends RecyclerView.Adapter<SeanceAdapter.SeanceView
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                idSeance="";
                 counter++;
                 if(counter%2==1) {
                     holder.linearLayout.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.card_select));
                     idSeance= list.get(position).getId();
+                    timeStartSeance=list.get(position).getStartTime();
+                    timeEndSeance=list.get(position).getEndTime();
+                    hallDataSeance=list.get(position).getHallName();
                     //Toast.makeText(view.getContext(), list.get(position).getId(), Toast.LENGTH_LONG).show();
                 }
                 else{

@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bstu.fit.yarmolik.cinema.Adapters.SeanceAdapter;
+import com.bstu.fit.yarmolik.cinema.Model.Seance;
 import com.bstu.fit.yarmolik.cinema.Model.SeanceDate;
 import com.bstu.fit.yarmolik.cinema.ModelAdapter.SeanceModel;
 import com.bstu.fit.yarmolik.cinema.R;
@@ -49,7 +50,10 @@ private ArrayList<SeanceModel> seanceModels;
 ArrayList<String> idCinema,nameCinema,addressCinema,infoCinema;
 private ArrayList<String> hallId,startTime,endTime,seanceId,hallName;
 List<CinemaResponce> cinema;
+public static String dateFilm="";
+public static String cinemaInfo="";
 RecyclerView recyclerView;
+private String idSeanceCard="";
 private SeanceAdapter seanceAdapter;
 private List<SeanceDateResponse> dateResponses;
 CompositeDisposable compositeDisposable;
@@ -73,6 +77,7 @@ private HorizontalCalendar horizontalCalendar;
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 recyclerView.setVisibility(View.GONE);
                 selectedCinema=idCinema.get(infoCinema.indexOf(item));
+                cinemaInfo=infoCinema.get(infoCinema.indexOf(item));
                 relativeLayout.setVisibility(View.VISIBLE);
                 //Toast.makeText(AddInfoTicket.this, selectedCinema, Toast.LENGTH_LONG).show();
             }
@@ -83,8 +88,8 @@ private HorizontalCalendar horizontalCalendar;
                 clearLists();
                 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
                 date.add(Calendar.DAY_OF_MONTH,1);
-                String dates = format1.format(date.getTime());
-                SeanceDate seanceDate=new SeanceDate(selectedCinema,idFilm,dates);
+                dateFilm = format1.format(date.getTime());
+                SeanceDate seanceDate=new SeanceDate(selectedCinema,idFilm,dateFilm);
                 Call<List<SeanceDateResponse>> call=iMyApi.infoSeanceLoad(seanceDate);
                 call.enqueue(new Callback<List<SeanceDateResponse>>() {
                     @Override
@@ -110,6 +115,11 @@ private HorizontalCalendar horizontalCalendar;
                         }
                         else{
                             recyclerView.setVisibility(View.GONE);
+                            seanceModels.clear();
+                            SeanceAdapter.idSeance="";
+                            SeanceAdapter.timeEndSeance="";
+                            SeanceAdapter.timeStartSeance="";
+                            SeanceAdapter.hallDataSeance="";
                             Toast.makeText(AddInfoTicket.this, "нету сеансов на сегодня", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -124,10 +134,13 @@ private HorizontalCalendar horizontalCalendar;
         addTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String idSeanceCard=SeanceAdapter.idSeance;
-                if(!idSeanceCard.equals("")) {
+                idSeanceCard="";
+                idSeanceCard=SeanceAdapter.idSeance;
+                if(!SeanceAdapter.idSeance.equals("")) {
                     Intent intent=new Intent(AddInfoTicket.this, SelectTickets.class);
-                    intent.putExtra("SeanceId",idSeanceCard);
+                    intent.putExtra("SeanceId",SeanceAdapter.idSeance);
+                    intent.putExtra("idFilm",idFilm);
+                    intent.putExtra("dateSeance",dateFilm);
                     startActivity(intent);
                 }
                 else{

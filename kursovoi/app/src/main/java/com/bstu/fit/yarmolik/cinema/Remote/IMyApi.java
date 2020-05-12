@@ -1,5 +1,6 @@
 package com.bstu.fit.yarmolik.cinema.Remote;
 
+import com.bstu.fit.yarmolik.cinema.Model.BoughtTicket;
 import com.bstu.fit.yarmolik.cinema.Model.CheckSeance;
 import com.bstu.fit.yarmolik.cinema.Model.CinemaInfo;
 import com.bstu.fit.yarmolik.cinema.Model.FilmInfo;
@@ -12,8 +13,10 @@ import com.bstu.fit.yarmolik.cinema.Model.UserData;
 import com.bstu.fit.yarmolik.cinema.Responces.CinemaResponce;
 import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.HallResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.PlacesNumber;
 import com.bstu.fit.yarmolik.cinema.Responces.SeanceDateResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.TicketResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.UserResponce;
 
 import java.util.List;
 
@@ -71,4 +74,10 @@ public interface IMyApi {
     Call<List<SeanceDateResponse>> infoSeanceLoad(@Body SeanceDate seanceDate);
     @GET("api/tickets/{id}")
     Call<List<TicketResponse>> getTickets(@Path("id") String id);
+    @POST("api/login")
+    Call<List<UserResponce>> checkLogin(@Body LoginUser user);
+    @POST("api/publishtickets")
+    Observable<String> publishTickets(@Body BoughtTicket boughtTicket);
+    @GET("api/publishtickets/{id}")
+    Call<PlacesNumber> getPlacesNumber(@Path("id") String id);
 }

@@ -5,7 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -27,18 +28,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SelectTickets extends AppCompatActivity {
-private String seanceId;
+private String seanceId,idFilm,dateFilm;
 private IMyApi iMyApi;
 private ArrayList<Integer> placesList;
 public ArrayList<Double> priceList;
 private TextView priceTextView;
 private ArrayList<String> idTicketsList;
+private ArrayList<String> idTicketsListSelectByUser;
 private ArrayList<Boolean> statusList;
 private GridView gridView;
 private GridArrayAdapter adapter;
 private Integer size;
-private Double price=0.0;
-private Integer counter=0;
+public static Double price=0.0;
+public static Integer counter=0;
+public static Double finalPrice=0.0;
 private Button button;
 private TextView countTextView,finalPriceTextView;
 
@@ -46,6 +49,9 @@ private List<TicketResponse> ticketResponseArrayList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_select_tickets);
         init();
         loadTicketsInfo(seanceId);
@@ -60,8 +66,9 @@ private List<TicketResponse> ticketResponseArrayList;
                     public void run() {
                         price=GridArrayAdapter.prices;
                         counter=GridArrayAdapter.counter;
+                        finalPrice=counter*price;
                         countTextView.setText(counter.toString());
-                        finalPriceTextView.setText(String.valueOf(counter*price));
+                        finalPriceTextView.setText(String.valueOf(finalPrice));
                     }
                 });
             }
@@ -71,13 +78,20 @@ private List<TicketResponse> ticketResponseArrayList;
             public void onClick(View view) {
                 if (adapter.getSelectedPositions().size() > 0) {
                     for(int i=0;i<adapter.getSelectedPositions().size();i++){
-                        Toast.makeText(SelectTickets.this, idTicketsList.get(adapter.getSelectedPositions().get(i)), Toast.LENGTH_LONG).show();
+                        idTicketsListSelectByUser.add(idTicketsList.get(adapter.getSelectedPositions().get(i)));
+                        //Toast.makeText(SelectTickets.this, idTicketsList.get(adapter.getSelectedPositions().get(i)), Toast.LENGTH_LONG).show();
                     }
+                    Intent intent = new Intent(SelectTickets.this,TicketInfo.class);
+                    intent.putExtra("idFilm",idFilm);
+                    intent.putExtra("idSeance",seanceId);
+                    intent.putExtra("list",returnIdTickets());
+                    intent.putExtra("dateFilm",dateFilm);
+                    startActivity(intent);
+                    idTicketsListSelectByUser.clear();
                 } else {
-
+                    Toast.makeText(SelectTickets.this, "Выберите места", Toast.LENGTH_LONG).show();
                 }
-                Intent intent = new Intent(SelectTickets.this,TicketInfo.class);
-                startActivity(intent);
+
             }
         });
     }
@@ -85,6 +99,8 @@ private List<TicketResponse> ticketResponseArrayList;
         iMyApi= RetrofitClient.getInstance().create(IMyApi.class);
         Bundle arguments = getIntent().getExtras();
         seanceId=arguments.get("SeanceId").toString();
+        idFilm=arguments.getString("idFilm");
+        dateFilm=arguments.getString("dateSeance");
         statusList=new ArrayList<>();
         priceList=new ArrayList<>();
         placesList=new ArrayList<>();
@@ -94,6 +110,7 @@ private List<TicketResponse> ticketResponseArrayList;
         countTextView=findViewById(R.id.countTicketsTextView);
         finalPriceTextView=findViewById(R.id.priceFinal);
         button=findViewById(R.id.reservTicket);
+        idTicketsListSelectByUser=new ArrayList<>();
 
     }
     public void loadTicketsInfo(String id){
@@ -130,5 +147,8 @@ private List<TicketResponse> ticketResponseArrayList;
             }
         });
 
+    }
+    private ArrayList<String> returnIdTickets(){
+        return idTicketsListSelectByUser;
     }
 }

@@ -30,6 +30,7 @@ import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
 import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.UserResponce;
 
 import java.util.List;
 
@@ -56,6 +57,8 @@ public class Login extends AppCompatActivity {
     private ProgressBar loadingProgressBar;
     private RelativeLayout rootView, afterAnimationView;
     IMyApi iMyApi;
+    private String userId,userLogin,userEmail;
+    private Integer userRoleId;
     Intent intent;
     CompositeDisposable compositeDisposable;
     CheckInternetConnection checkInternetConnection;
@@ -119,32 +122,46 @@ public class Login extends AppCompatActivity {
                                 .build();
                         alertDialog.show();
                         LoginUser user = new LoginUser(login.getText().toString(), password.getText().toString());
-                        compositeDisposable.add(iMyApi.loginUser(user)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(s -> {
-                                    alertDialog.dismiss();
-                                    Toast.makeText(Login.this, s, Toast.LENGTH_LONG).show();
-                                    Integer equal = 1;
-                                    Integer secondequal = 2;
-                                    if (s.toLowerCase().contains(equal.toString())) {
-                                        Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
-                                        intent = new Intent(Login.this, MainActivity.class);
-                                        intent.putExtra("userRole",equal);
-                                        intent.putExtra("stateInternetConnection",stateInternet);
-                                        startActivity(intent);
-                                    } else if (s.toLowerCase().contains(secondequal.toString())) {
-                                        if (checkInternetConnection.isOnline(Login.this)) {
+                        Call<List<UserResponce>> call = iMyApi.checkLogin(user);
+                        call.enqueue(new Callback<List<UserResponce>>() {
+                            @Override
+                            public void onResponse(Call<List<UserResponce>> call, Response<List<UserResponce>> response) {
+                                if (!response.body().equals("User doesn't exsist") || !response.body().equals("Wrong password")) {
+                                    for (UserResponce userResponce : response.body()) {
+                                        userId = userResponce.getId();
+                                        userRoleId = userResponce.getRoleId();
+                                        userEmail=userResponce.getEmail();
+                                        userLogin=userResponce.getLogin();
+                                        //Toast.makeText(Login.this, userRoleId.toString(), Toast.LENGTH_LONG).show();
+                                        if(userRoleId==1){
+                                            alertDialog.dismiss();
+                                            //Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
+                                            intent = new Intent(Login.this, MainActivity.class);
+                                            intent.putExtra("userRole",userRoleId);
+                                            intent.putExtra("stateInternetConnection",stateInternet);
+                                            intent.putExtra("userId",userId);
+                                            intent.putExtra("userLogin",userLogin);
+                                            intent.putExtra("userEmail",userEmail);
+                                            startActivity(intent);
+                                        }
+                                        else if(userRoleId==2){
+                                            alertDialog.dismiss();
                                             intent = new Intent(Login.this, ManagerActivity.class);
                                             startActivity(intent);
-                                        } else {
                                         }
                                     }
-                                }, throwable -> {
-                                    alertDialog.dismiss();
-                                    Toast.makeText(Login.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                                })
-                        );
+
+                                }
+                                else{
+                                    Toast.makeText(Login.this, "Некорректные данные", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<UserResponce>> call, Throwable t) {
+
+                            }
+                        });
                     }
                     else{
                         Toast.makeText(Login.this, "Нет интернета", Toast.LENGTH_SHORT).show();
@@ -158,6 +175,9 @@ public class Login extends AppCompatActivity {
     public void Skip(View view){
         intent=new Intent(Login.this,MainActivity.class);
         intent.putExtra("userRole",3);
+        intent.putExtra("userId","5096f422-e4d4-47c8-934c-9ac5fced23c7");
+        intent.putExtra("userLogin","Guest1234@gmail.com");
+        intent.putExtra("userEmail","Guest1234");
         intent.putExtra("stateInternetConnection",stateInternet);
         startActivity(intent);
     }
@@ -200,27 +220,6 @@ public class Login extends AppCompatActivity {
             @Override
             public void onAnimationRepeat(Animator animation) {
 
-            }
-        });
-    }
-    private void loadFilms(){
-        Call<List<FilmResponse>> call=iMyApi.getFilms();
-        call.enqueue(new Callback<List<FilmResponse>>() {
-            @Override
-            public void onResponse(Call<List<FilmResponse>> call, Response<List<FilmResponse>> response) {
-                if(!response.isSuccessful()){
-                    Toast.makeText(Login.this, response.code(), Toast.LENGTH_LONG).show();
-                }
-                posts=response.body();
-               /* for(FilmResponse post : posts){
-                    //List<String> names;
-                    String name = "";
-                    name +=post.getName()+"\n";
-                }*/
-            }
-            @Override
-            public void onFailure(Call<List<FilmResponse>> call, Throwable t) {
-                Toast.makeText(Login.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

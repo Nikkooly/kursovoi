@@ -97,17 +97,24 @@ public class GridArrayAdapter extends BaseAdapter {
                         pos=pos/2;
                     }
                     int selectedIndex = selectedPositions.indexOf(pos);
-                    if (!status.get(pos) && selectedIndex > -1) {
-                        counter--;
-                        prices=price.get(0);
-                        selectedPositions.remove(selectedIndex);
-                        ((Button) view).setBackgroundColor(Color.rgb(53, 172, 72));
-                    } else if (!status.get(pos) && selectedIndex == -1){
-                        selectedPositions.add(pos);
-                        prices=price.get(0);
-                        counter++;
-                        ((Button) view).setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.titleColor));
-                    }
+
+                        if (!status.get(pos) && selectedIndex > -1) {
+                            counter--;
+                            prices = price.get(0);
+                            selectedPositions.remove(selectedIndex);
+                            ((Button) view).setBackgroundColor(Color.rgb(53, 172, 72));
+                        } else if (!status.get(pos) && selectedIndex == -1) {
+                            if(counter<=6) {
+                            selectedPositions.add(pos);
+                            prices = price.get(0);
+                            counter++;
+                            ((Button) view).setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.titleColor));
+                            }
+                            else{
+                        Toast.makeText(mContext, "Нельзя купить больше 7 билетов одноврменно", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
                 }
             });
         }
