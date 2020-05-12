@@ -29,7 +29,7 @@ namespace Server.Controllers
                     var login = value.Login;
                     if (login.Equals(userData.Login) && password.Equals(userData.Password))
                     {
-                        return JsonConvert.SerializeObject(userData.RoleId);
+                        return JsonConvert.SerializeObject(cinemaContext.UserData.Where(u=> u.Login.Equals(value.Login) & u.Password.Equals(value.Password)).Select(s=> new { s.RoleId, s.Id,s.Email,s.Login }));
                     }
                     else
                     {

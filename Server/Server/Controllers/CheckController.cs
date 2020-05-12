@@ -15,6 +15,12 @@ namespace Server.Controllers
     {
         CinemaContext cinemaContext = new CinemaContext();
 
+       /* [HttpGet("{id}")]
+        public string Get(string id)
+        {
+            return JsonConvert.SerializeObject(cinemaContext.Tickets.Where(u => u.Id.ToString().Equals(id)).Select(x => new { x.Place }).OrderBy(s => s.Place));
+        }*/
+
         // POST api/<controller>
         [HttpPost]
         public string Post([FromBody]Seance value)

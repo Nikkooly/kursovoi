@@ -32,7 +32,7 @@ namespace Server.Controllers
                     CinemaInfo cinemaInfo = new CinemaInfo();
                     HallInfo hallInfo = new HallInfo();
                     return JsonConvert.SerializeObject(
-                   cinemaContext.HallInfo
+                   cinemaContext.HallInfo.Where(i => i.CinemaId.ToString().Equals(id))
                    .Select(x => new { x.Id, x.Name, x.Places, x.CinemaId }));
                        //.Where(i => i.CinemaId.Equals(id)));                  
                    
@@ -52,7 +52,7 @@ namespace Server.Controllers
         [HttpPost]
         public string Post([FromBody]HallInfo value)
         {
-            if (!cinemaContext.HallInfo.Any(hall => hall.Name.Equals(value.Name)))
+            if (!cinemaContext.HallInfo.Any(hall => hall.Name.Equals(value.Name) & hall.CinemaId.Equals(value.CinemaId)))
             {
                 HallInfo hall = new HallInfo();
                 hall.CinemaId = value.CinemaId;

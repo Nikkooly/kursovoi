@@ -11,7 +11,7 @@ using Server.Models;
 namespace Server.Controllers
 {
     [Route("api/[controller]")]
-    public class TicketsController : Controller
+    public class PlacesController : Controller
     {
         CinemaContext cinemaContext = new CinemaContext();
         // GET: api/<controller>
@@ -25,35 +25,14 @@ namespace Server.Controllers
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            return JsonConvert.SerializeObject(cinemaContext.Tickets.Where(u => u.SeanceId.ToString().Equals(id)).Select(x => new { x.Id, x.Place, x.Price, x.Status }).OrderBy(s => s.Place));
+            return JsonConvert.SerializeObject(cinemaContext.Tickets.Where(u=>u.Id.ToString().Equals(id)).Select(x=>x.Place));
         }
-
 
         // POST api/<controller>
         [HttpPost]
-        public string Post([FromBody]Tickets value)
+        public void Post([FromBody]string value)
         {
-            Tickets tickets = new Tickets()
-            {
-                Id = Guid.NewGuid(),
-                Place = value.Place,
-                Price = value.Price,
-                Status = value.Status,
-                SeanceId = value.SeanceId
-            };
-            try
-            {
-                cinemaContext.Add(tickets);
-                cinemaContext.SaveChanges();
-                return JsonConvert.SerializeObject("Сеанс успешно добавлен");
-            }
-            catch (Exception ex)
-            {
-                return JsonConvert.SerializeObject(ex.Message);
-            }
-
         }
-     
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]

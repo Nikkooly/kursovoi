@@ -27,11 +27,14 @@ namespace Server.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public List<CinemaInfoForTicket> Get(string id)
+        public string Get(string id)
          {
+            DateTime now = DateTime.Now;
+            string date =now.ToString("yyyy-MM-ddThh:mm:ss");
+            DateTime startDate = DateTime.ParseExact(date, "yyyy-MM-ddTHH:mm:ss", null);
             using (var db = new CinemaContext())
             {
-                var seances = db.Seance.Where(x => x.FilmId == new Guid(id))
+                return JsonConvert.SerializeObject(db.Seance.Where(x => x.FilmId == new Guid(id) & x.StartTime.CompareTo(startDate)==1)
                     .Join(
                     db.HallInfo,
                     s=>s.HallId,
@@ -47,8 +50,8 @@ namespace Server.Controllers
                         Name=c.Name,
                         Adress=c.Adress
                         }
-                    ).ToList();
-                return seances;
+                    ).ToList());
+               
             }
         }
          
