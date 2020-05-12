@@ -5,11 +5,13 @@ public class Seance {
     private String HallId;
     private String FilmId;
     private String EndTime;
-    public Seance(String start_time, String hallId, String filmId,String end_time){
+    private Double TicketPrice;
+    public Seance(String start_time, String hallId, String filmId,String end_time,Double ticketPrice){
         StartTime=start_time;
         HallId=hallId;
         FilmId=filmId;
         EndTime=end_time;
+        TicketPrice=ticketPrice;
     }
 
     public void setHallId(String hallId) {
@@ -42,5 +44,13 @@ public class Seance {
 
     public void setStartTime(String startTime) {
         StartTime = startTime;
+    }
+
+    public Double getTicketPrice() {
+        return TicketPrice;
+    }
+
+    public void setTicketPrice(Double ticketPrice) {
+        TicketPrice = ticketPrice;
     }
 }

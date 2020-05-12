@@ -37,11 +37,11 @@ public class AddHallFragment extends Fragment {
     private List<CinemaResponce> cinema;
     private ArrayList<String> list;
     private ArrayList<String> idList;
-    private String choose="";
+    private String choose="",chooseCount="";
     private EditText name, countOfPlaces;
     private Button addHallButton;
     private CompositeDisposable compositeDisposable;
-    private MaterialSpinner spinner;
+    private MaterialSpinner spinner,spinnerCount;
     private IMyApi iMyApi;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +49,7 @@ public class AddHallFragment extends Fragment {
         View view= inflater.inflate(R.layout.fragment_add_hall, container, false);
         init(view);
         loadCinema();
+        spinnerCount.setItems("70", "90", "100");
         spinner.setItems(list);
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
@@ -56,19 +57,24 @@ public class AddHallFragment extends Fragment {
                 choose=item;
             }
         });
+        spinnerCount.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                chooseCount=item;
+            }
+        });
         addHallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = list.indexOf(choose);
                 String nameOfHall=name.getText().toString();
-                String countOfHall=countOfPlaces.getText().toString();
-                if(!choose.equals("") && !nameOfHall.equals("") && !countOfHall.equals("")){
+                if(!choose.equals("") && !nameOfHall.equals("") && !chooseCount.equals("")){
                     String cinemaId=idList.get(position);
                     AlertDialog alertDialog = new SpotsDialog.Builder()
                             .setContext(getContext())
                             .build();
                     alertDialog.show();
-                    HallInfo hall=new HallInfo(cinemaId,nameOfHall, Integer.parseInt(countOfPlaces.getText().toString()));
+                    HallInfo hall=new HallInfo(cinemaId,nameOfHall, Integer.parseInt(chooseCount));
                     compositeDisposable.add(iMyApi.addHall(hall)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -96,8 +102,9 @@ public class AddHallFragment extends Fragment {
     private void init(View view){
         iMyApi= RetrofitClient.getInstance().create(IMyApi.class);
         spinner=view.findViewById(R.id.spinnerSelectCinemaOfHall);
+        spinnerCount=view.findViewById(R.id.addCountOfPlacesOfHall);
         name=view.findViewById(R.id.addNameOfHall);
-        countOfPlaces=view.findViewById(R.id.addCountOfPlacesOfHall);
+        //countOfPlaces=view.findViewById(R.id.addCountOfPlacesOfHall);
         addHallButton=view.findViewById(R.id.addHall);
         compositeDisposable=new CompositeDisposable();
         list= new ArrayList<String>();

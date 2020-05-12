@@ -26,9 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GridArrayAdapter extends BaseAdapter {
-    private ArrayList<String> id;
     public static Integer counter=0;
-    public static Double prices=0.0;
     private ArrayList<Double> price;
     private ArrayList<Boolean> status;
     private ArrayList<Integer> places;
@@ -48,21 +46,19 @@ public class GridArrayAdapter extends BaseAdapter {
         id.clear();
         places.clear();
     }*/
-    public void setInfo(ArrayList<Boolean> statusS, ArrayList<String> idS, ArrayList<Integer> placesS, ArrayList<Double> priceS, Integer count) {
+    public void setInfo(ArrayList<Boolean> statusS, ArrayList<Integer> placesS, Integer count) {
         this.status = statusS;
-        this.id=idS;
         this.places=placesS;
-        this.price=priceS;
         counter=count;
     }
 
     @Override
     public int getCount() {
-        return id.size();
+        return places.size();
     }
     @Override
     public Object getItem(int position) {
-        return id.get(position);
+        return places.get(position);
     }
 
     @Override
@@ -89,24 +85,15 @@ public class GridArrayAdapter extends BaseAdapter {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(id.size()%2==0){
                         pos = Integer.parseInt(((Button) view).getText().toString()) - 1;
-                    }
-                    else{
-                        pos = Integer.parseInt(((Button) view).getText().toString()) - 1;
-                        pos=pos/2;
-                    }
                     int selectedIndex = selectedPositions.indexOf(pos);
-
                         if (!status.get(pos) && selectedIndex > -1) {
                             counter--;
-                            prices = price.get(0);
                             selectedPositions.remove(selectedIndex);
                             ((Button) view).setBackgroundColor(Color.rgb(53, 172, 72));
                         } else if (!status.get(pos) && selectedIndex == -1) {
                             if(counter<=6) {
                             selectedPositions.add(pos);
-                            prices = price.get(0);
                             counter++;
                             ((Button) view).setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.titleColor));
                             }

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,29 +39,46 @@ public class ManagerFilmFragment extends Fragment {
           @Override
           public void onClick(View view) {
               try {
-                  AlertDialog alertDialog = new SpotsDialog.Builder()
-                          .setContext(getContext())
-                          .build();
-                  alertDialog.show();
-                  FilmInfo film = new FilmInfo(nameOfTheFilm.getText().toString(),
-                          Integer.parseInt(yearOfTheFilm.getText().toString()),
-                          countryOfTheFilm.getText().toString(),
-                          Integer.parseInt(durationOfTheFilm.getText().toString()),
-                          genreOfTheFilm.getText().toString(),
-                          descriptionOfTheFilm.getText().toString(),
-                          posterOfTheFilm.getText().toString()
-                  );
-                  compositeDisposable.add(iMyApi.filmInfo(film)
-                          .subscribeOn(Schedulers.io())
-                          .observeOn(AndroidSchedulers.mainThread())
-                          .subscribe(s -> {
-                              alertDialog.dismiss();
-                              Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
-                          }, throwable -> {
-                              alertDialog.dismiss();
-                              Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                          })
-                  );
+                  String name=nameOfTheFilm.getText().toString();
+                  String year=yearOfTheFilm.getText().toString();
+                  String country=countryOfTheFilm.getText().toString();
+                  String genre=genreOfTheFilm.getText().toString();
+                  String duration=durationOfTheFilm.getText().toString();
+                  String description=descriptionOfTheFilm.getText().toString();
+                  String poster=posterOfTheFilm.getText().toString();
+                  if(!name.equals("") && !year.equals("") && !country.equals("") && !genre.equals("") && !description.equals("") && !poster.equals("") && !duration.equals("")) {
+                      if(URLUtil.isValidUrl(poster)) {
+                          AlertDialog alertDialog = new SpotsDialog.Builder()
+                                  .setContext(getContext())
+                                  .build();
+                          alertDialog.show();
+                          FilmInfo film = new FilmInfo(nameOfTheFilm.getText().toString(),
+                                  Integer.parseInt(yearOfTheFilm.getText().toString()),
+                                  countryOfTheFilm.getText().toString(),
+                                  Integer.parseInt(durationOfTheFilm.getText().toString()),
+                                  genreOfTheFilm.getText().toString(),
+                                  descriptionOfTheFilm.getText().toString(),
+                                  posterOfTheFilm.getText().toString()
+                          );
+                          compositeDisposable.add(iMyApi.filmInfo(film)
+                                  .subscribeOn(Schedulers.io())
+                                  .observeOn(AndroidSchedulers.mainThread())
+                                  .subscribe(s -> {
+                                      alertDialog.dismiss();
+                                      Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
+                                  }, throwable -> {
+                                      alertDialog.dismiss();
+                                      Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                  })
+                          );
+                      }
+                      else{
+                          Toast.makeText(getContext(), "Некорректная ссылка!", Toast.LENGTH_SHORT).show();
+                      }
+                  }
+                  else{
+                      Toast.makeText(getContext(), "Заполните поля!", Toast.LENGTH_SHORT).show();
+                  }
               }
               catch (Exception ex){
                   Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();

@@ -43,7 +43,7 @@ public class Registration extends AppCompatActivity  {
                 String emailValue = email.getText().toString();
                 String passwordValue = password.getText().toString();
                 boolean checkLogin = loginValue.matches("^[a-zA-Z][a-zA-Z0-9-_\\.]{1,20}$");
-                boolean checkEmail = emailValue.matches("^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$");
+                boolean checkEmail = emailValue.matches("^([A-Za-z0-9_-]+\\.)*[A-Za-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$");
                 boolean checkPassword = passwordValue.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$");
                 if (checkPassword == true && checkEmail==true && checkLogin==true) {
 

@@ -15,6 +15,8 @@ import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.HallResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.PlacesNumber;
 import com.bstu.fit.yarmolik.cinema.Responces.SeanceDateResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.SeanceInfo;
+import com.bstu.fit.yarmolik.cinema.Responces.TicketInfoData;
 import com.bstu.fit.yarmolik.cinema.Responces.TicketResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.UserResponce;
 
@@ -80,4 +82,8 @@ public interface IMyApi {
     Observable<String> publishTickets(@Body BoughtTicket boughtTicket);
     @GET("api/publishtickets/{id}")
     Call<PlacesNumber> getPlacesNumber(@Path("id") String id);
+    @GET("api/seance/loadDataSeance/{id}")
+    Call<List<SeanceInfo>> getSeanceInfo(@Path("id") String id);
+    @GET("api/seance/loadDataTicket/{id}")
+    Call<List<TicketInfoData>> getTicketInfo(@Path("id") String id);
 }

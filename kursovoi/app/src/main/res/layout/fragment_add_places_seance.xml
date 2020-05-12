@@ -125,12 +125,6 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="Все места" />
-
-        <RadioButton
-            android:id="@+id/halfPlaces"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Половина мест" />
     </RadioGroup>
 
     <EditText

@@ -86,7 +86,7 @@ RadioGroup radioGroup;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final CharSequence[] items = {"2020-02-11 11:11 \n 2020-02-11 11:11", "Bar", "Baz"};
+                final CharSequence[] items = {"К сожалению разработчик не успел сделать этот компонент"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Список сеансов в этом зале сегодня");
@@ -125,9 +125,6 @@ RadioGroup radioGroup;
                   case R.id.allPlaces:
                       select="All";
                       break;
-                  case R.id.halfPlaces:
-                      select="Half";
-                      break;
               }
               Toast.makeText(getContext(),select,Toast.LENGTH_SHORT).show();
           }
@@ -140,7 +137,7 @@ RadioGroup radioGroup;
                           .setContext(getContext())
                           .build();
                   alertDialog.show();
-              Seance seance = new Seance(selectedStartDate, idHallSeance, idHallFilm, selectedEndDate);
+              Seance seance = new Seance(selectedStartDate, idHallSeance, idHallFilm, selectedEndDate,Double.parseDouble(priceText.getText().toString()));
               compositeDisposable.add(iMyApi.addSeance(seance)
                       .subscribeOn(Schedulers.io())
                       .observeOn(AndroidSchedulers.mainThread())
@@ -149,18 +146,6 @@ RadioGroup radioGroup;
                           public void accept(String s) throws Exception {
                               Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                               if (!s.equals("Сеанс уже существует")) {
-                                  if (!priceText.getText().toString().equals("")) {
-                                      Double price = Double.parseDouble(priceText.getText().toString());
-                                      if (select.equals("All")) {
-                                          for (int i = 1; i <= countOfPlaces; i++) {
-                                              addTicketsInfo(i, price, s);
-                                          }
-                                      } else {
-                                          for (int i = 1; i <= countOfPlaces; i += 2) {
-                                              addTicketsInfo(i, price, s);
-                                          }
-                                      }
-                                  }
                                   alertDialog.dismiss();
                                   Toast.makeText(getContext(), "Сеанс успешно добавлен", Toast.LENGTH_SHORT).show();
                               }
@@ -185,22 +170,6 @@ RadioGroup radioGroup;
       });
        return view;
     }
-    private void addTicketsInfo(Integer place, Double price, String s){
-            Tickets tickets = new Tickets(place,price,s,false);
-            compositeDisposable.add(iMyApi.addTickets(tickets)
-            .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<String>() {
-                        @Override
-                        public void accept(String s) throws Exception {
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                        }
-                    })
-            );
-    }
     private void init(View view){
         try {
             filmName = view.findViewById(R.id.textView20);
@@ -219,7 +188,6 @@ RadioGroup radioGroup;
             addPlaces = view.findViewById(R.id.addPlaces);
             durationTextView=view.findViewById(R.id.textView27);
             buttonAll = view.findViewById(R.id.allPlaces);
-            buttonHalf = view.findViewById(R.id.halfPlaces);
             fab= view.findViewById(R.id.fab);
             radioGroup = view.findViewById(R.id.radios);
             compositeDisposable = new CompositeDisposable();

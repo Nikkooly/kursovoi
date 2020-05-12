@@ -16,6 +16,8 @@ import com.bstu.fit.yarmolik.cinema.Adapters.GridArrayAdapter;
 import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
+import com.bstu.fit.yarmolik.cinema.Responces.SeanceInfo;
+import com.bstu.fit.yarmolik.cinema.Responces.TicketInfoData;
 import com.bstu.fit.yarmolik.cinema.Responces.TicketResponse;
 
 import java.util.ArrayList;
@@ -33,16 +35,18 @@ private IMyApi iMyApi;
 private ArrayList<Integer> placesList;
 public ArrayList<Double> priceList;
 private TextView priceTextView;
-private ArrayList<String> idTicketsList;
 private ArrayList<String> idTicketsListSelectByUser;
 private ArrayList<Boolean> statusList;
 private GridView gridView;
 private GridArrayAdapter adapter;
 private Integer size;
+public static Integer countOfPlaces=0;
+public static Double priceOfPlace=0.0;
 public static Double price=0.0;
 public static Integer counter=0;
 public static Double finalPrice=0.0;
 private Button button;
+public static ArrayList<Integer> bookTicket;
 private TextView countTextView,finalPriceTextView;
 
 private List<TicketResponse> ticketResponseArrayList;
@@ -54,7 +58,9 @@ private List<TicketResponse> ticketResponseArrayList;
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_select_tickets);
         init();
-        loadTicketsInfo(seanceId);
+        //loadTicketsInfo(seanceId);
+        loadBookTickets(seanceId);
+        loadSeanceInfo(seanceId);
         Timer timer = new Timer();
         long delay = 0;
         long period = 100;
@@ -64,9 +70,8 @@ private List<TicketResponse> ticketResponseArrayList;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        price=GridArrayAdapter.prices;
                         counter=GridArrayAdapter.counter;
-                        finalPrice=counter*price;
+                        finalPrice=counter*priceOfPlace;
                         countTextView.setText(counter.toString());
                         finalPriceTextView.setText(String.valueOf(finalPrice));
                     }
@@ -78,7 +83,7 @@ private List<TicketResponse> ticketResponseArrayList;
             public void onClick(View view) {
                 if (adapter.getSelectedPositions().size() > 0) {
                     for(int i=0;i<adapter.getSelectedPositions().size();i++){
-                        idTicketsListSelectByUser.add(idTicketsList.get(adapter.getSelectedPositions().get(i)));
+                        idTicketsListSelectByUser.add(adapter.getSelectedPositions().get(i).toString());
                         //Toast.makeText(SelectTickets.this, idTicketsList.get(adapter.getSelectedPositions().get(i)), Toast.LENGTH_LONG).show();
                     }
                     Intent intent = new Intent(SelectTickets.this,TicketInfo.class);
@@ -104,49 +109,58 @@ private List<TicketResponse> ticketResponseArrayList;
         statusList=new ArrayList<>();
         priceList=new ArrayList<>();
         placesList=new ArrayList<>();
-        idTicketsList=new ArrayList<>();
         gridView=findViewById(R.id.gridPlaces);
         priceTextView=findViewById(R.id.priceTicket);
         countTextView=findViewById(R.id.countTicketsTextView);
         finalPriceTextView=findViewById(R.id.priceFinal);
         button=findViewById(R.id.reservTicket);
         idTicketsListSelectByUser=new ArrayList<>();
+        bookTicket=new ArrayList<>();
 
     }
-    public void loadTicketsInfo(String id){
-        Call<List<TicketResponse>> call= iMyApi.getTickets(id);
-        call.enqueue(new Callback<List<TicketResponse>>() {
+    public void loadSeanceInfo(String id){
+        Call<List<SeanceInfo>> call=iMyApi.getSeanceInfo(id);
+        call.enqueue(new Callback<List<SeanceInfo>>() {
             @Override
-            public void onResponse(Call<List<TicketResponse>> call, Response<List<TicketResponse>> response) {
-                ticketResponseArrayList=response.body();
-                for(TicketResponse ticket : ticketResponseArrayList){
-                    placesList.add(ticket.getPlace());
-                    priceList.add(ticket.getPrice());
-                    idTicketsList.add(ticket.getId());
-                    statusList.add(ticket.getStatus());
+            public void onResponse(Call<List<SeanceInfo>> call, Response<List<SeanceInfo>> response) {
+                for(SeanceInfo seanceInfo :response.body()){
+                    countOfPlaces=seanceInfo.getPlaces();
+                    priceOfPlace=seanceInfo.getTicketPrice();
                 }
-                size=statusList.size();
-                priceTextView.setText(priceList.get(0).toString());
-                if(size%10==0) {
-                    adapter = new GridArrayAdapter(SelectTickets.this);
-                    //adapter.clear();
-                    adapter.setInfo(statusList, idTicketsList, placesList,priceList,0);
-                    gridView.setAdapter(adapter);
+                priceTextView.setText(priceOfPlace.toString());
+                for(int i=0;i<countOfPlaces;i++){
+                    placesList.add(i);
+                    statusList.add(false);
                 }
-                else{
-                    gridView.setNumColumns(5);
-                    adapter = new GridArrayAdapter(SelectTickets.this);
-                   // adapter.clear();
-                    adapter.setInfo(statusList, idTicketsList, placesList,priceList,0);
-                    gridView.setAdapter(adapter);
+                for(int i=0;i<bookTicket.size();i++){
+                    statusList.set(bookTicket.get(i),true);
                 }
+                adapter = new GridArrayAdapter(SelectTickets.this);
+                adapter.setInfo(statusList, placesList,0);
+                gridView.setAdapter(adapter);
             }
+
             @Override
-            public void onFailure(Call<List<TicketResponse>> call, Throwable t) {
-                Toast.makeText(SelectTickets.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(Call<List<SeanceInfo>> call, Throwable t) {
+
             }
         });
+    }
+    public void loadBookTickets(String id){
+        Call<List<TicketInfoData>> call=iMyApi.getTicketInfo(id);
+        call.enqueue(new Callback<List<TicketInfoData>>() {
+            @Override
+            public void onResponse(Call<List<TicketInfoData>> call, Response<List<TicketInfoData>> response) {
+                for(TicketInfoData ticketInfoData: response.body()){
+                    bookTicket.add(ticketInfoData.getPlace());
+                }
+            }
 
+            @Override
+            public void onFailure(Call<List<TicketInfoData>> call, Throwable t) {
+
+            }
+        });
     }
     private ArrayList<String> returnIdTickets(){
         return idTicketsListSelectByUser;
