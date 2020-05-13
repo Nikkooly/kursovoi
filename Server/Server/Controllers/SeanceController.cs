@@ -54,7 +54,25 @@ namespace Server.Controllers
                
             }
         }
-         
+        [HttpGet("loadDataSeance/{id}")]
+        public string GetSeanceData(string id)
+        {
+            return JsonConvert.SerializeObject(cinemaContext.Seance.Where(u => u.Id.ToString().Equals(id))
+                .Join(cinemaContext.HallInfo,
+                s => s.HallId,
+                h => h.Id,
+                (s, h) => new
+                {
+                    h.Places,
+                    s.TicketPrice
+                }).ToList());
+        }
+        [HttpGet("loadDataTicket/{id}")]
+        public string GetTicketData(string id)
+        {
+            return JsonConvert.SerializeObject(cinemaContext.Tickets.Where(u => u.SeanceId.ToString().Equals(id)).Select(s=>new { s.SeanceId, s.Place, s.UserId }));
+        }
+
         // POST api/<controller>
         [HttpPost]
         public async Task<string> Post([FromBody]SeanceData value)
@@ -65,14 +83,15 @@ namespace Server.Controllers
             DateTime endDate = DateTime.ParseExact(value.EndTime.Replace(' ', 'T'), "yyyy-MM-ddTHH:mm:ss", null);
             using var db = new CinemaContext();
             {
-                if ((await db.Seance.ToListAsync())?.All(x=> startDate.CompareTo(x.StartTime) == -1 && endDate.CompareTo(x.StartTime) == -1
-                        || startDate.CompareTo(x.EndTime) == 1) == true)
+                if ((await db.Seance.Where(x => x.HallId == value.HallId).ToListAsync())?.All(x=> startDate.CompareTo(x.StartTime) == -1 && endDate.CompareTo(x.StartTime) == -1
+                        || startDate.CompareTo(x.EndTime) == 1) == true) //&& !db.Seance.Any(u=>u.HallId.Equals(value.HallId)))
                 {
                     seance.StartTime = DateTime.ParseExact(value.StartTime, "yyyy-MM-dd HH:mm:ss", null);
                     seance.EndTime = DateTime.ParseExact(value.EndTime, "yyyy-MM-dd HH:mm:ss", null);
                     seance.HallId = value.HallId;
                     seance.FilmId = value.FilmId;
                     seance.Id = guid;
+                    seance.TicketPrice = value.TicketPrice;
                     try
                     {
                         cinemaContext.Add(seance);

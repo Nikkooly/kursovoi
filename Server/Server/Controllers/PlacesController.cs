@@ -22,11 +22,11 @@ namespace Server.Controllers
         }
 
         // GET api/<controller>/5
-        [HttpGet("{id}")]
+        /*[HttpGet("{id}")]
         public string Get(string id)
         {
             return JsonConvert.SerializeObject(cinemaContext.Tickets.Where(u=>u.Id.ToString().Equals(id)).Select(x=>x.Place));
-        }
+        }*/
 
         // POST api/<controller>
         [HttpPost]

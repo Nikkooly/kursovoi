@@ -25,12 +25,23 @@ namespace Server.Controllers
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            return JsonConvert.SerializeObject(cinemaContext.Tickets.Where(u => u.SeanceId.ToString().Equals(id)).Select(x => new { x.Id, x.Place, x.Price, x.Status }).OrderBy(s => s.Place));
+            // return JsonConvert.SerializeObject(from  cinemaContext.Ticke
+           return JsonConvert.SerializeObject((from t in cinemaContext.Tickets
+                          join s in cinemaContext.Seance on t.SeanceId equals s.Id
+                          join f in cinemaContext.FilmInfo on s.FilmId equals f.Id
+                          where t.UserId.ToString() == id
+                          select new UserTicket()
+                          {
+                             SeanceId=  s.Id.ToString(),
+                             Date=s.StartTime.ToString("yyyy-MM-dd"),
+                             Time=s.StartTime.ToString("HH:mm"),
+                             Name =f.Name
+                          }).Distinct());
         }
 
 
         // POST api/<controller>
-        [HttpPost]
+       /* [HttpPost]
         public string Post([FromBody]Tickets value)
         {
             Tickets tickets = new Tickets()
@@ -52,7 +63,7 @@ namespace Server.Controllers
                 return JsonConvert.SerializeObject(ex.Message);
             }
 
-        }
+        }*/
      
 
         // PUT api/<controller>/5

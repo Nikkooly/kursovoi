@@ -11,7 +11,7 @@ namespace Server.Models
         }
 
         public int Id { get; set; }
-        public string Role { get; set; }
+        public int Role { get; set; }
 
         public virtual ICollection<UserData> UserData { get; set; }
     }

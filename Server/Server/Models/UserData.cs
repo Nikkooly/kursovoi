@@ -7,16 +7,16 @@ namespace Server.Models
     {
         public UserData()
         {
-            SaledTickets = new HashSet<SaledTickets>();
+            Tickets = new HashSet<Tickets>();
         }
 
         public Guid Id { get; set; }
         public string Login { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public int? RoleId { get; set; }
+        public int RoleId { get; set; }
 
         public virtual Roles Role { get; set; }
-        public virtual ICollection<SaledTickets> SaledTickets { get; set; }
+        public virtual ICollection<Tickets> Tickets { get; set; }
     }
 }

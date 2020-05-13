@@ -20,16 +20,17 @@ namespace Server.Controllers
         [HttpPost]
         public string Post([FromBody]UserData value)
         {
+            var password = value.Password.ToString();
+            var login = value.Login;
             if (cinemaContext.UserData.Any(user => user.Login.Equals(value.Login)))
             {
                 try
                 {
                     UserData userData = cinemaContext.UserData.Where(u => u.Login.Equals(value.Login)).First();
-                    var password = value.Password;
-                    var login = value.Login;
-                    if (login.Equals(userData.Login) && password.Equals(userData.Password))
+                   
+                    if (login.Equals(userData.Login) && password.Equals(userData.Password.ToString()))
                     {
-                        return JsonConvert.SerializeObject(cinemaContext.UserData.Where(u=> u.Login.Equals(value.Login) & u.Password.Equals(value.Password)).Select(s=> new { s.RoleId, s.Id,s.Email,s.Login }));
+                        return JsonConvert.SerializeObject(cinemaContext.UserData.Where(u=> u.Login.Equals(value.Login) & u.Password.Equals(value.Password.ToString())).Select(s=> new { s.RoleId, s.Id,s.Email,s.Login }));
                     }
                     else
                     {

@@ -12,6 +12,7 @@ namespace Server.Models
         public Guid HallId { get; set; }
         public Guid FilmId { get; set; }
         public string EndTime { get; set; }
+        public double TicketPrice { get; set; }
 
     }
 }

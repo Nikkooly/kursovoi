@@ -20,7 +20,6 @@ namespace Server.Models
         public virtual DbSet<HallInfo> HallInfo { get; set; }
         public virtual DbSet<Rating> Rating { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
-        public virtual DbSet<SaledTickets> SaledTickets { get; set; }
         public virtual DbSet<Seance> Seance { get; set; }
         public virtual DbSet<Tickets> Tickets { get; set; }
         public virtual DbSet<UserData> UserData { get; set; }
@@ -46,8 +45,7 @@ namespace Server.Models
 
                 entity.Property(e => e.Adress)
                     .IsRequired()
-                    .HasColumnName("adress")
-                    .HasMaxLength(50);
+                    .HasColumnName("adress");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -77,8 +75,7 @@ namespace Server.Models
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasColumnName("name")
-                    .HasMaxLength(50);
+                    .HasColumnName("name");
 
                 entity.Property(e => e.Poster)
                     .IsRequired()
@@ -134,33 +131,7 @@ namespace Server.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Role)
-                    .IsRequired()
-                    .HasColumnName("role")
-                    .HasMaxLength(10);
-            });
-
-            modelBuilder.Entity<SaledTickets>(entity =>
-            {
-                entity.ToTable("saled_tickets");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.TicketId).HasColumnName("ticket_id");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Ticket)
-                    .WithMany(p => p.SaledTickets)
-                    .HasForeignKey(d => d.TicketId)
-                    .HasConstraintName("Fk_Saled_tickets_ticket_cascade");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.SaledTickets)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("Fk_Saled_tickets_user_id___cascade");
+                entity.Property(e => e.Role).HasColumnName("role");
             });
 
             modelBuilder.Entity<Seance>(entity =>
@@ -183,6 +154,8 @@ namespace Server.Models
                     .HasColumnName("start_time")
                     .HasColumnType("smalldatetime");
 
+                entity.Property(e => e.TicketPrice).HasColumnName("ticket_price");
+
                 entity.HasOne(d => d.Film)
                     .WithMany(p => p.Seance)
                     .HasForeignKey(d => d.FilmId)
@@ -204,16 +177,19 @@ namespace Server.Models
 
                 entity.Property(e => e.Place).HasColumnName("place");
 
-                entity.Property(e => e.Price).HasColumnName("price");
-
                 entity.Property(e => e.SeanceId).HasColumnName("seance_id");
 
-                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.Seance)
                     .WithMany(p => p.Tickets)
                     .HasForeignKey(d => d.SeanceId)
-                    .HasConstraintName("Fk_Place_price_seance_id_Cascade");
+                    .HasConstraintName("Fk_Ticket_Seance_id_Cascade");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Tickets)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("Fk_Ticket_id_user_Cascade");
             });
 
             modelBuilder.Entity<UserData>(entity =>

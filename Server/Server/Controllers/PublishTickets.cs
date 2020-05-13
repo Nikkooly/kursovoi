@@ -25,34 +25,28 @@ namespace Server.Controllers
         [HttpPost]
         public string Post([FromBody]BoughtTicket value)
         {
-            List<Guid> placesId = value.IdPlace;
+            List<int> placesId=new List<int>();
+            for(int i = 0; i < value.Place.Count(); i++)
+            {
+                placesId.Add(Convert.ToInt32(value.Place.ElementAt(i)));
+            }
             string emailUser = value.EmailUser;
             bool status = false;
-            SaledTickets saledTickets= new SaledTickets();
             StringBuilder stringBuilder = new StringBuilder();
-            Tickets tickets;
+            Tickets tickets=new Tickets();
             using (var transaction = cinemaContext.Database.BeginTransaction())
             {
                 try
                 {
                     for(int i = 0; i < placesId.Count(); i++)
                     {
-                        if (!cinemaContext.SaledTickets.Any(u=> u.TicketId.Equals(placesId.ElementAt(i))))
-                        {                        
-                            saledTickets.TicketId = value.IdPlace.ElementAt(i);
-                            saledTickets.UserId = value.IdUser;
-                            saledTickets.Id = Guid.NewGuid();
-                            tickets = cinemaContext.Tickets.Where(u => u.Id.Equals(placesId.ElementAt(i))).FirstOrDefault();
-                            if (tickets != null)
-                            {
-                                tickets.Status = true;
-                            }
-                            else
-                            {
-                                return "No";
-                            }
-                            cinemaContext.Add(saledTickets);                           
-                            cinemaContext.Update(tickets);
+                        if (!cinemaContext.Tickets.Any(u=> u.Place.Equals(placesId.ElementAt(i)) && u.SeanceId.Equals(value.SeanceId))) //TicketId.Equals(placesId.ElementAt(i))))
+                        {
+                            tickets.Id = Guid.NewGuid();
+                            tickets.SeanceId = value.SeanceId;
+                            tickets.UserId = value.IdUser;
+                            tickets.Place = placesId.ElementAt(i);                           
+                            cinemaContext.Add(tickets);
                             cinemaContext.SaveChanges();
                         }
                         else
@@ -61,7 +55,7 @@ namespace Server.Controllers
                             transaction.Rollback();
                             return "No";
                         }
-                        stringBuilder.Append(cinemaContext.Tickets.Where(u=>u.Id.Equals(placesId.ElementAt(i))).Select(s=>s.Place.ToString()).First()+",");
+                        stringBuilder.Append(value.Place.ElementAt(i).ToString()+",");
                     }
                    
                     transaction.Commit();
