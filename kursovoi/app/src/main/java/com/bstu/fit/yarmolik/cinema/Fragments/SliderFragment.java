@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bstu.fit.yarmolik.cinema.Adapters.SlidingImage_Adapter;
 import com.bstu.fit.yarmolik.cinema.CheckInternetConnection;
+import com.bstu.fit.yarmolik.cinema.Login;
 import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
 import com.daimajia.androidanimations.library.specials.out.TakingOffAnimator;
@@ -39,10 +40,9 @@ public class SliderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_slider, container, false);
-        Bundle arguments = getActivity().getIntent().getExtras();
+       /* Bundle arguments = getActivity().getIntent().getExtras();
         relativeLayout=view.findViewById(R.id.sliderRelative);
-        roleId=arguments.getInt("userRole");
-        checkInternetState=arguments.getBoolean("stateInternetConnection");
+        roleId= Login.userRoleId;
         checkInternetConnection=new CheckInternetConnection();
         if(checkInternetConnection.isOnline(getContext())) {
             checkInternetState=true;
@@ -83,7 +83,7 @@ public class SliderFragment extends Fragment {
         else{
             checkInternetState=false;
             Toast.makeText(getContext(),"Нет интернета", Toast.LENGTH_SHORT).show();
-        }
+        }*/
         return view;
     }
 }

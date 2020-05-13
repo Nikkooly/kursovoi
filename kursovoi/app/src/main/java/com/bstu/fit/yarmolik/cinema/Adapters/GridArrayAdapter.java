@@ -85,7 +85,7 @@ public class GridArrayAdapter extends BaseAdapter {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                        pos = Integer.parseInt(((Button) view).getText().toString()) - 1;
+                    pos = Integer.parseInt(((Button) view).getText().toString())-1;
                     int selectedIndex = selectedPositions.indexOf(pos);
                         if (!status.get(pos) && selectedIndex > -1) {
                             counter--;
@@ -93,9 +93,10 @@ public class GridArrayAdapter extends BaseAdapter {
                             ((Button) view).setBackgroundColor(Color.rgb(53, 172, 72));
                         } else if (!status.get(pos) && selectedIndex == -1) {
                             if(counter<=6) {
-                            selectedPositions.add(pos);
+                            selectedPositions.add(pos+1);
                             counter++;
                             ((Button) view).setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.titleColor));
+                                selectedIndex=0;
                             }
                             else{
                         Toast.makeText(mContext, "Нельзя купить больше 7 билетов одноврменно", Toast.LENGTH_LONG).show();

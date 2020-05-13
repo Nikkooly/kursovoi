@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.bstu.fit.yarmolik.cinema.Adapters.MyAdapter;
 import com.bstu.fit.yarmolik.cinema.CheckInternetConnection;
+import com.bstu.fit.yarmolik.cinema.Login;
 import com.bstu.fit.yarmolik.cinema.ModelAdapter.CinemaModel;
 import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
@@ -51,8 +52,7 @@ public class CinemaFragment extends Fragment {
         recyclerView=(RecyclerView) view.findViewById(R.id.recyclerView);
         init(view);
         Bundle arguments = getActivity().getIntent().getExtras();
-        roleId=arguments.getInt("userRole");
-        checkInternetState=arguments.getBoolean("stateInternetConnection");
+        roleId= Login.userRoleId;
         checkInternetConnection=new CheckInternetConnection();
         if(checkInternetConnection.isOnline(getContext())) {
             checkInternetState=true;

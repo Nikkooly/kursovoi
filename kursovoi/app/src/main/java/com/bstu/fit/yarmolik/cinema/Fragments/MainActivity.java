@@ -54,8 +54,6 @@ SliderFragment sliderFragment;
     public ArrayList<String> nameList,countryList,descriptionList,posterList,genreList,idList;
     public ArrayList<Integer> durationList,yearList;
     private BottomNavigationView bottomNavigationView;
-    public static Integer userRoleId;
-    public static String userId,userEmail,userLogin;
     private boolean stateInternet;
 
     @Override
@@ -126,10 +124,5 @@ SliderFragment sliderFragment;
             durationList=new ArrayList<Integer>();
             posterList=new ArrayList<String>();
             countryList= new ArrayList<String>();
-            Bundle arguments = getIntent().getExtras();
-            userRoleId=arguments.getInt("userRole");
-            userId=arguments.getString("userId");
-            userEmail=arguments.getString("userEmail");
-            userLogin=arguments.getString("userLogin");
         }
 }

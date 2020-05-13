@@ -12,6 +12,7 @@ import com.bstu.fit.yarmolik.cinema.Model.Tickets;
 import com.bstu.fit.yarmolik.cinema.Model.UserData;
 import com.bstu.fit.yarmolik.cinema.Responces.CinemaResponce;
 import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.GuestResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.HallResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.PlacesNumber;
 import com.bstu.fit.yarmolik.cinema.Responces.SeanceDateResponse;
@@ -19,6 +20,7 @@ import com.bstu.fit.yarmolik.cinema.Responces.SeanceInfo;
 import com.bstu.fit.yarmolik.cinema.Responces.TicketInfoData;
 import com.bstu.fit.yarmolik.cinema.Responces.TicketResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.UserResponce;
+import com.bstu.fit.yarmolik.cinema.Responces.UserTicket;
 
 import java.util.List;
 
@@ -75,7 +77,7 @@ public interface IMyApi {
     @POST("api/data")
     Call<List<SeanceDateResponse>> infoSeanceLoad(@Body SeanceDate seanceDate);
     @GET("api/tickets/{id}")
-    Call<List<TicketResponse>> getTickets(@Path("id") String id);
+    Call<List<UserTicket>> getTickets(@Path("id") String id);
     @POST("api/login")
     Call<List<UserResponce>> checkLogin(@Body LoginUser user);
     @POST("api/publishtickets")
@@ -86,4 +88,6 @@ public interface IMyApi {
     Call<List<SeanceInfo>> getSeanceInfo(@Path("id") String id);
     @GET("api/seance/loadDataTicket/{id}")
     Call<List<TicketInfoData>> getTicketInfo(@Path("id") String id);
+    @GET("api/guest/{id}")
+    Call<List<GuestResponse>> getGuestInfo(@Path("id") Integer id);
 }

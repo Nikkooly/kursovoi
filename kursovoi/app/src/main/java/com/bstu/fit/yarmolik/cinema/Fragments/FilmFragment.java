@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.bstu.fit.yarmolik.cinema.Adapters.FilmAdapter;
 import com.bstu.fit.yarmolik.cinema.CheckInternetConnection;
+import com.bstu.fit.yarmolik.cinema.Login;
 import com.bstu.fit.yarmolik.cinema.ModelAdapter.FilmModel;
 import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
@@ -47,7 +48,7 @@ private ArrayList<String> nameList;
 private ArrayList<String> idList;
 private String[] nameArray;
 private  Integer roleId;
-    CheckInternetConnection checkInternetConnection;
+CheckInternetConnection checkInternetConnection;
 public boolean checkInternetState;
 private ArrayList<String> posterList;
 private ArrayList<String> descriptionList;
@@ -65,9 +66,7 @@ ImageView imageView;
         View view= inflater.inflate(R.layout.fragment_film, container, false);
         recyclerView=view.findViewById(R.id.recyclerFilmView);
         init(view);
-        Bundle arguments = getActivity().getIntent().getExtras();
-        roleId=arguments.getInt("userRole");
-        checkInternetState=arguments.getBoolean("stateInternetConnection");
+        roleId= Login.userRoleId;
         checkInternetConnection=new CheckInternetConnection();
         if(checkInternetConnection.isOnline(getContext())) {
             checkInternetState=true;

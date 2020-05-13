@@ -30,6 +30,7 @@ import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
 import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.GuestResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.UserResponce;
 
 import java.util.List;
@@ -57,8 +58,8 @@ public class Login extends AppCompatActivity {
     private ProgressBar loadingProgressBar;
     private RelativeLayout rootView, afterAnimationView;
     IMyApi iMyApi;
-    private String userId,userLogin,userEmail;
-    private Integer userRoleId;
+    public static Integer userRoleId,guestRoleId;
+    public static String userId,guestId,userEmail,guestEmail,userLogin,guestLogin;
     Intent intent;
     CompositeDisposable compositeDisposable;
     CheckInternetConnection checkInternetConnection;
@@ -74,6 +75,7 @@ public class Login extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
         initViews();
+        getGuestInfo(3);
         new CountDownTimer(3000, 1000) {
 
             @Override
@@ -137,11 +139,7 @@ public class Login extends AppCompatActivity {
                                             alertDialog.dismiss();
                                             //Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
                                             intent = new Intent(Login.this, MainActivity.class);
-                                            intent.putExtra("userRole",userRoleId);
                                             intent.putExtra("stateInternetConnection",stateInternet);
-                                            intent.putExtra("userId",userId);
-                                            intent.putExtra("userLogin",userLogin);
-                                            intent.putExtra("userEmail",userEmail);
                                             startActivity(intent);
                                         }
                                         else if(userRoleId==2){
@@ -174,11 +172,7 @@ public class Login extends AppCompatActivity {
     }
     public void Skip(View view){
         intent=new Intent(Login.this,MainActivity.class);
-        intent.putExtra("userRole",3);
-        intent.putExtra("userId","5096f422-e4d4-47c8-934c-9ac5fced23c7");
-        intent.putExtra("userLogin","Guest1234@gmail.com");
-        intent.putExtra("userEmail","Guest1234");
-        intent.putExtra("stateInternetConnection",stateInternet);
+         userRoleId=3;
         startActivity(intent);
     }
     public void SignUp(View view){
@@ -228,5 +222,23 @@ public class Login extends AppCompatActivity {
     protected void onStop() {
         compositeDisposable.clear();
         super.onStop();
+    }
+    public void getGuestInfo(Integer id){
+        Call<List<GuestResponse>> call=iMyApi.getGuestInfo(id);
+        call.enqueue(new Callback<List<GuestResponse>>() {
+            @Override
+            public void onResponse(Call<List<GuestResponse>> call, Response<List<GuestResponse>> response) {
+                for(GuestResponse guestResponse:response.body()){
+                    guestId=guestResponse.getId();
+                    guestLogin=guestResponse.getLogin();
+                    guestEmail=guestResponse.getEmail();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GuestResponse>> call, Throwable t) {
+
+            }
+        });
     }
 }

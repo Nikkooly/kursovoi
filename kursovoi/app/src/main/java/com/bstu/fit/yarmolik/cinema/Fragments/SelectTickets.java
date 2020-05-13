@@ -128,12 +128,12 @@ private List<TicketResponse> ticketResponseArrayList;
                     priceOfPlace=seanceInfo.getTicketPrice();
                 }
                 priceTextView.setText(priceOfPlace.toString());
-                for(int i=0;i<countOfPlaces;i++){
+                for(int i=1;i<=countOfPlaces;i++){
                     placesList.add(i);
                     statusList.add(false);
                 }
                 for(int i=0;i<bookTicket.size();i++){
-                    statusList.set(bookTicket.get(i),true);
+                    statusList.set(bookTicket.get(i)-1,true);
                 }
                 adapter = new GridArrayAdapter(SelectTickets.this);
                 adapter.setInfo(statusList, placesList,0);

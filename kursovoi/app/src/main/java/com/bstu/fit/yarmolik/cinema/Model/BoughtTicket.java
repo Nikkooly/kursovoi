@@ -4,27 +4,25 @@ import java.util.List;
 
 public class BoughtTicket {
     public String IdUser;
-    public List<String> IdPlace;
     public String EmailUser;
     public String Date;
     public String StartTime;
     public String EndTime;
     public String CinemaInfo;
     public String HallName;
-    public String Count;
-    public String FinalPrice;
+    public String SeanceId;
+    public List<String> Place;
 
-    public BoughtTicket(String idUser, List<String> idPlace, String emailUser, String date, String startTime, String endTime, String cinemaInfo, String hallName, String count, String finalPrice) {
+    public BoughtTicket(String idUser, String emailUser, String date, String startTime, String endTime, String cinemaInfo, String hallName, String seanceId, List<String> place) {
         IdUser = idUser;
-        IdPlace = idPlace;
         EmailUser = emailUser;
         Date = date;
         StartTime = startTime;
         EndTime = endTime;
         CinemaInfo = cinemaInfo;
         HallName = hallName;
-        Count = count;
-        FinalPrice = finalPrice;
+        SeanceId = seanceId;
+        Place = place;
     }
 
     public String getIdUser() {
@@ -35,13 +33,6 @@ public class BoughtTicket {
         IdUser = idUser;
     }
 
-    public List<String> getIdPlace() {
-        return IdPlace;
-    }
-
-    public void setIdPlace(List<String> idPlace) {
-        IdPlace = idPlace;
-    }
 
     public String getEmailUser() {
         return EmailUser;
@@ -75,7 +66,6 @@ public class BoughtTicket {
         EndTime = endTime;
     }
 
-
     public String getCinemaInfo() {
         return CinemaInfo;
     }
@@ -92,19 +82,19 @@ public class BoughtTicket {
         HallName = hallName;
     }
 
-    public String getCount() {
-        return Count;
+    public String getSeanceId() {
+        return SeanceId;
     }
 
-    public void setCount(String count) {
-        Count = count;
+    public void setSeanceId(String seanceId) {
+        SeanceId = seanceId;
     }
 
-    public String getFinalPrice() {
-        return FinalPrice;
+    public List<String> getPlace() {
+        return Place;
     }
 
-    public void setFinalPrice(String finalPrice) {
-        FinalPrice = finalPrice;
+    public void setPlace(List<String> place) {
+        Place = place;
     }
 }

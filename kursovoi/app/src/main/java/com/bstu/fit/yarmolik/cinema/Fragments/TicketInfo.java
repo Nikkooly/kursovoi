@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bstu.fit.yarmolik.cinema.Adapters.SeanceAdapter;
+import com.bstu.fit.yarmolik.cinema.Login;
 import com.bstu.fit.yarmolik.cinema.Model.BoughtTicket;
 import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Registration;
@@ -76,9 +77,9 @@ private Fragment currentFragment = null;
 private FragmentTransaction ft;
 private String seanceId,idFilm,dateFilm;
 private List<FilmResponse> posts;
+private ArrayList<Integer> places;
 private IMyApi iMyApi;
 private String date,startTime,endTime,cinemaInfo,hallInfo,count,finalPrice;
-private ArrayList<String> places;
 private TextView nameFilmTextView, genreTextView,dateTimeTextView,dateTextView,cinemaInfoTextView,hallNameTextView,priceTextView,countPlacesTextView;
 private ConstraintLayout constraintLayout;
 private EditText emailEditText;
@@ -97,29 +98,28 @@ private ImageView imageView,imageView2;
                 .setContext(TicketInfo.this)
                 .build();
         alertDialog.show();
-        if(MainActivity.userRoleId==1){
-            emailEditText.setText(MainActivity.userEmail);
+        if(Login.userRoleId==1){
+            emailEditText.setText(Login.userEmail);
         }
         selectedTickets=(ArrayList<String>) getIntent().getSerializableExtra("list");
-        //Toast.makeText(TicketInfo.this,selectedTickets.get(0),Toast.LENGTH_SHORT).show();
         loadFilms(idFilm);
         alertDialog.dismiss();
-        //Toast.makeText(TicketInfo.this,String.valueOf(selectedTickets.size()), Toast.LENGTH_SHORT).show();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean checkEmail = emailEditText.getText().toString().matches("^([A-Za-z0-9_-]+\\.)*[A-Za-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$");
                 if (checkEmail) {
-                    BoughtTicket boughtTicket = new BoughtTicket(MainActivity.userId,
-                            selectedTickets,
+                    BoughtTicket boughtTicket = new BoughtTicket(
+                            Login.userId,
                             emailEditText.getText().toString(),
                             date,
                             startTime,
                             endTime,
                             cinemaInfo,
                             hallInfo,
-                            count,
-                            finalPrice);
+                            seanceId,
+                            selectedTickets
+                    );
                     AlertDialog alertDialog = new SpotsDialog.Builder()
                             .setContext(TicketInfo.this)
                             .build();
@@ -133,8 +133,8 @@ private ImageView imageView,imageView2;
                                     alertDialog.dismiss();
                                     Toast.makeText(TicketInfo.this, s, Toast.LENGTH_SHORT).show();
                                     if (!s.equals("No")) {
-                                        //Intent intent = new Intent(TicketInfo.this, MainActivity.class);
-                                        //startActivity(intent);
+                                        Intent intent = new Intent(TicketInfo.this, MainActivity.class);
+                                        startActivity(intent);
                                     } else {
                                         Toast.makeText(TicketInfo.this, "Непридвиденная ошибка, приносим свои извинения!", Toast.LENGTH_SHORT).show();
                                     }
