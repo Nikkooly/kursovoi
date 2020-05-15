@@ -34,7 +34,7 @@ namespace Server.Controllers
                     }
                     else
                     {
-                        return JsonConvert.SerializeObject("Wrong password");
+                        return JsonConvert.SerializeObject(cinemaContext.UserData.Where(u => u.Login.Equals("") & u.Password.Equals("")).Select(s => new { s.RoleId, s.Id, s.Email, s.Login }));
                     }
                 }
                 catch(Exception ex)
@@ -44,7 +44,7 @@ namespace Server.Controllers
             }
             else
             {
-                return JsonConvert.SerializeObject("User doesn't exsist");
+                return "[]";
             }
         }
 

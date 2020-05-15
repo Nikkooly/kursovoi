@@ -29,42 +29,52 @@ namespace Server.Controllers
            return JsonConvert.SerializeObject((from t in cinemaContext.Tickets
                           join s in cinemaContext.Seance on t.SeanceId equals s.Id
                           join f in cinemaContext.FilmInfo on s.FilmId equals f.Id
+                          join h in cinemaContext.HallInfo on s.HallId equals h.Id
+                          join c in cinemaContext.CinemaInfo on h.CinemaId equals c.Id
                           where t.UserId.ToString() == id
                           select new UserTicket()
                           {
                              SeanceId=  s.Id.ToString(),
-                             Date=s.StartTime.ToString("yyyy-MM-dd"),
+                             Date=s.StartTime.ToString("dd MMMM"),
                              Time=s.StartTime.ToString("HH:mm"),
-                             Name =f.Name
+                             Name =f.Name,
+                             Cinema=c.Name+" "+c.Adress,
+                             Hall=h.Name
                           }).Distinct());
+        }
+        [HttpGet("placesData/{user_id}&{seance_id}")]
+        public string GetPlaces(string user_id,string seance_id)
+        {
+            // return JsonConvert.SerializeObject(from  cinemaContext.Ticke
+            return JsonConvert.SerializeObject(cinemaContext.Tickets.Where(u=>u.SeanceId.ToString().Equals(seance_id) &u.UserId.ToString().Equals(user_id)).Select(p=>new { p.Place, p.Id }));
         }
 
 
         // POST api/<controller>
-       /* [HttpPost]
-        public string Post([FromBody]Tickets value)
-        {
-            Tickets tickets = new Tickets()
-            {
-                Id = Guid.NewGuid(),
-                Place = value.Place,
-                Price = value.Price,
-                Status = value.Status,
-                SeanceId = value.SeanceId
-            };
-            try
-            {
-                cinemaContext.Add(tickets);
-                cinemaContext.SaveChanges();
-                return JsonConvert.SerializeObject("Сеанс успешно добавлен");
-            }
-            catch (Exception ex)
-            {
-                return JsonConvert.SerializeObject(ex.Message);
-            }
+        /* [HttpPost]
+         public string Post([FromBody]Tickets value)
+         {
+             Tickets tickets = new Tickets()
+             {
+                 Id = Guid.NewGuid(),
+                 Place = value.Place,
+                 Price = value.Price,
+                 Status = value.Status,
+                 SeanceId = value.SeanceId
+             };
+             try
+             {
+                 cinemaContext.Add(tickets);
+                 cinemaContext.SaveChanges();
+                 return JsonConvert.SerializeObject("Сеанс успешно добавлен");
+             }
+             catch (Exception ex)
+             {
+                 return JsonConvert.SerializeObject(ex.Message);
+             }
 
-        }*/
-     
+         }*/
+
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]

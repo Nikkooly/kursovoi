@@ -11,5 +11,7 @@ namespace Server.Models
         public string Date { get; set; }
         public string Time { get; set; }
         public string Name { get; set; }
+        public string Cinema { get; set; }
+        public string Hall { get; set; }
     }
 }

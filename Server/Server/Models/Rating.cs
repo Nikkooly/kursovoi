@@ -7,7 +7,9 @@ namespace Server.Models
     {
         public Guid Id { get; set; }
         public Guid FilmId { get; set; }
+        public Guid UserId { get; set; }
         public double Rating1 { get; set; }
+        public string Review { get; set; }
 
         public virtual FilmInfo Film { get; set; }
     }

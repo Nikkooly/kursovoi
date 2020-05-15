@@ -23,6 +23,8 @@ namespace Server.Models
         public virtual DbSet<Seance> Seance { get; set; }
         public virtual DbSet<Tickets> Tickets { get; set; }
         public virtual DbSet<UserData> UserData { get; set; }
+        public virtual DbSet<ViewFilmInfo> ViewFilmInfo { get; set; }
+     
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,6 +37,7 @@ namespace Server.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+        
             modelBuilder.Entity<CinemaInfo>(entity =>
             {
                 entity.ToTable("cinema_info");
@@ -118,6 +121,10 @@ namespace Server.Models
                 entity.Property(e => e.FilmId).HasColumnName("film_id");
 
                 entity.Property(e => e.Rating1).HasColumnName("rating");
+
+                entity.Property(e => e.Review).HasColumnName("review");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.Film)
                     .WithMany(p => p.Rating)
@@ -221,6 +228,33 @@ namespace Server.Models
                     .WithMany(p => p.UserData)
                     .HasForeignKey(d => d.RoleId)
                     .HasConstraintName("FK__user_data__role___145C0A3F");
+            });
+
+            modelBuilder.Entity<ViewFilmInfo>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("View_FilmInfo");
+
+                entity.Property(e => e.Country).HasColumnName("country");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasColumnType("text");
+
+                entity.Property(e => e.Duration).HasColumnName("duration");
+
+                entity.Property(e => e.Genre).HasColumnName("genre");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Name).HasColumnName("name");
+
+                entity.Property(e => e.Poster).HasColumnName("poster");
+
+                entity.Property(e => e.Rating).HasColumnName("rating");
+
+                entity.Property(e => e.Year).HasColumnName("year");
             });
 
             OnModelCreatingPartial(modelBuilder);

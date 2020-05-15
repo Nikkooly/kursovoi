@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Server.Models;
@@ -23,8 +24,22 @@ namespace Server.Controllers
            public string Get()
            {
              FilmInfo film = new FilmInfo();
-            return JsonConvert.SerializeObject(cinemaContext.FilmInfo.Select(x => new { x.Id, x.Name, x.Poster, x.Year, x.Country, x.Description, x.Duration, x.Genre}));
-         }
+            //return JsonConvert.SerializeObject(cinemaContext.FilmInfo.Select(x => new { x.Id, x.Name, x.Poster, x.Year, x.Country, x.Description, x.Duration, x.Genre}));
+            using (CinemaContext db = new CinemaContext())
+            {
+                /*db.Database.ExecuteSqlRaw(@"CREATE VIEW View_FilmInfo as 
+                                                               SELECT  F.id, F.name, F.poster, F.year, F.country, F.description, F.duration,F.genre, 
+                                                               CASE WHEN r.RATING is null THEN 0
+                                                               ELSE R.RATING END as rating
+                                                               FROM film_info AS F
+                                                               FULL JOIN (SELECT AVG([rating]) AS RATING ,[film_id]
+                                                               FROM [Cinema].[dbo].[rating]
+                                                               GROUP BY [film_id]) AS R
+                                                               ON F.id = R.Film_id");*/
+               
+            }
+            return JsonConvert.SerializeObject(cinemaContext.ViewFilmInfo);
+        }
 
         // GET api/<controller>/5
          [HttpGet("{id}")]
