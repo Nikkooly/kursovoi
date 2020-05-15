@@ -13,10 +13,11 @@ public class FilmResponse implements Serializable {
     public String Genre;
     public String Description;
     public String Poster;
+    public Float Rating;
 
 
-    @SerializedName("body")
-    private String text;
+   /* @SerializedName("body")
+    private String text;*/
 
     public void setId(String id) {
         Id = id;
@@ -80,5 +81,13 @@ public class FilmResponse implements Serializable {
 
     public String getPoster() {
         return Poster;
+    }
+
+    public Float getRating() {
+        return Rating;
+    }
+
+    public void setRating(Float rating) {
+        Rating = rating;
     }
 }

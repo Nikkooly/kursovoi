@@ -37,7 +37,7 @@ public class TicketFragment extends Fragment {
     private IMyApi iMyApi;
     private TicketAdapter ticketAdapter;
     private ArrayList<TicketModel> ticketModels;
-    private ArrayList<String> nameFilm,dateSeance,idSeance,timeSeance;
+    private ArrayList<String> nameFilm,dateSeance,idSeance,timeSeance,cinema,hall,filmId,endTime;
     private boolean status=false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +65,10 @@ public class TicketFragment extends Fragment {
         dateSeance=new ArrayList<>();
         ticketModels=new ArrayList<>();
         timeSeance=new ArrayList<>();
+        cinema=new ArrayList<>();
+        hall=new ArrayList<>();
+        filmId=new ArrayList<>();
+        endTime=new ArrayList<>();
     }
     private void loadUserTicketsInfo(String id){
         Call<List<UserTicket>> call=iMyApi.getTickets(id);
@@ -78,16 +82,25 @@ public class TicketFragment extends Fragment {
                         idSeance.add(userTicket.getSeanceId());
                         dateSeance.add(userTicket.getDate());
                         timeSeance.add(userTicket.getTime());
+                        cinema.add(userTicket.getCinema());
+                        hall.add(userTicket.getHall());
+                        filmId.add(userTicket.getFilmId());
+                        endTime.add(userTicket.getEndTime());
                     }
                     for(int i=0;i<nameFilm.size();i++){
                         try{
-                        ticketModels.add(new TicketModel(nameFilm.get(i),idSeance.get(i),dateSeance.get(i),timeSeance.get(i),Login.userId));
+                        ticketModels.add(new TicketModel(nameFilm.get(i),
+                                idSeance.get(i),
+                                dateSeance.get(i),
+                                timeSeance.get(i),
+                                cinema.get(i),
+                                hall.get(i)));
                         }
                         catch (Exception ex){
                             Toast.makeText(getContext(),ex.getMessage()+" Exception",Toast.LENGTH_SHORT).show();
                         }
                     }
-                    ticketAdapter=new TicketAdapter(ticketModels);
+                    ticketAdapter=new TicketAdapter(ticketModels,TicketFragment.this);
                     recyclerView.setAdapter(ticketAdapter);
                 }
                 else{

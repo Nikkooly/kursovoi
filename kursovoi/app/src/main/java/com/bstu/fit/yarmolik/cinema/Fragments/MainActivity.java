@@ -44,7 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity   {
+public class MainActivity extends AppCompatActivity implements WayToInfoRilmFragment  {
 SliderFragment sliderFragment;
     private Toolbar toolbar;
     Fragment currentFragment = null;
@@ -55,6 +55,16 @@ SliderFragment sliderFragment;
     public ArrayList<Integer> durationList,yearList;
     private BottomNavigationView bottomNavigationView;
     private boolean stateInternet;
+    public void Open(String idFilm){
+        currentFragment = new InfoFilmFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("idFilmAdapter",idFilm);
+        currentFragment.setArguments(bundle);
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container, currentFragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -124,5 +134,8 @@ SliderFragment sliderFragment;
             durationList=new ArrayList<Integer>();
             posterList=new ArrayList<String>();
             countryList= new ArrayList<String>();
+        }
+        public void Finish(){
+        finish();
         }
 }

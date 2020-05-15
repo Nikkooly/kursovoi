@@ -57,6 +57,7 @@ private ArrayList<Integer> yearList;
 private ArrayList<String> genreList;
 private ArrayList<String> countryList;
 private ArrayList<Bitmap> imageList;
+private ArrayList<Float> ratingList;
 private Float rating=2.45F;
 private Bitmap testImage;
 ImageView imageView;
@@ -92,6 +93,7 @@ ImageView imageView;
         countryList=new ArrayList<String>();
         imageList=new ArrayList<Bitmap>();
         film=new ArrayList<>();
+        ratingList=new ArrayList<>();
     }
     private void loadFilmsInfo(){
 
@@ -112,10 +114,11 @@ ImageView imageView;
                     durationList.add(post.getDuration());
                     posterList.add(post.getPoster());
                     yearList.add(post.getYear());
+                    ratingList.add(post.getRating());
                 }
                 for(int i=0;i<posterList.size();i++){
                     try {
-                        film.add(new FilmModel(nameList.get(i), yearList.get(i).toString(), rating,posterList.get(i),idList.get(i)));//getBitmapFromURL(posterList.get(i))));
+                        film.add(new FilmModel(nameList.get(i), yearList.get(i).toString(), ratingList.get(i),posterList.get(i),idList.get(i)));//getBitmapFromURL(posterList.get(i))));
                     }
                     catch (Exception ex){
                         Toast.makeText(getContext(),ex.getMessage()+" Exception",Toast.LENGTH_SHORT).show();

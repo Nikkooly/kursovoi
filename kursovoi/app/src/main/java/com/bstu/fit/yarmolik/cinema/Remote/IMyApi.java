@@ -6,6 +6,7 @@ import com.bstu.fit.yarmolik.cinema.Model.CinemaInfo;
 import com.bstu.fit.yarmolik.cinema.Model.FilmInfo;
 import com.bstu.fit.yarmolik.cinema.Model.HallInfo;
 import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
+import com.bstu.fit.yarmolik.cinema.Model.Rating;
 import com.bstu.fit.yarmolik.cinema.Model.Seance;
 import com.bstu.fit.yarmolik.cinema.Model.SeanceDate;
 import com.bstu.fit.yarmolik.cinema.Model.Tickets;
@@ -15,6 +16,7 @@ import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.GuestResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.HallResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.PlacesNumber;
+import com.bstu.fit.yarmolik.cinema.Responces.PlacesResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.SeanceDateResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.SeanceInfo;
 import com.bstu.fit.yarmolik.cinema.Responces.TicketInfoData;
@@ -90,4 +92,8 @@ public interface IMyApi {
     Call<List<TicketInfoData>> getTicketInfo(@Path("id") String id);
     @GET("api/guest/{id}")
     Call<List<GuestResponse>> getGuestInfo(@Path("id") Integer id);
+    @GET("api/tickets/placesData/{user_id}&{seance_id}")
+    Call<List<PlacesResponse>> getPlaces(@Path("user_id") String user_id,@Path("seance_id") String seance_id);
+    @POST("api/review")
+    Observable<String> postReview(@Body Rating rating);
 }

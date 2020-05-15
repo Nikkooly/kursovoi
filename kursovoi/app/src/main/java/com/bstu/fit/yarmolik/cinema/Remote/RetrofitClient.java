@@ -1,12 +1,15 @@
 package com.bstu.fit.yarmolik.cinema.Remote;
 
 import io.reactivex.plugins.RxJavaPlugins;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+
+
 
 public class RetrofitClient {
     private static Retrofit instance;

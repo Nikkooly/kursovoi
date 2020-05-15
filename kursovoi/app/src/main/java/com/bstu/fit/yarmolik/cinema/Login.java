@@ -128,8 +128,9 @@ public class Login extends AppCompatActivity {
                         call.enqueue(new Callback<List<UserResponce>>() {
                             @Override
                             public void onResponse(Call<List<UserResponce>> call, Response<List<UserResponce>> response) {
-                                if (!response.body().equals("User doesn't exsist") || !response.body().equals("Wrong password")) {
                                     for (UserResponce userResponce : response.body()) {
+                                        //Toast.makeText(Login.this, response.body().size(), Toast.LENGTH_LONG).show();
+                                        //Toast.makeText(Login.this, userResponce.toString(), Toast.LENGTH_LONG).show();
                                         userId = userResponce.getId();
                                         userRoleId = userResponce.getRoleId();
                                         userEmail=userResponce.getEmail();
@@ -141,23 +142,25 @@ public class Login extends AppCompatActivity {
                                             intent = new Intent(Login.this, MainActivity.class);
                                             intent.putExtra("stateInternetConnection",stateInternet);
                                             startActivity(intent);
+                                            clear();
                                         }
                                         else if(userRoleId==2){
                                             alertDialog.dismiss();
                                             intent = new Intent(Login.this, ManagerActivity.class);
                                             startActivity(intent);
+                                            clear();
+                                        }
+                                        else{
+                                            alertDialog.dismiss();
+                                            Toast.makeText(Login.this, "Некорректные данные", Toast.LENGTH_LONG).show();
                                         }
                                     }
-
-                                }
-                                else{
-                                    Toast.makeText(Login.this, "Некорректные данные", Toast.LENGTH_LONG).show();
-                                }
                             }
 
                             @Override
                             public void onFailure(Call<List<UserResponce>> call, Throwable t) {
-
+                                alertDialog.dismiss();
+                                Toast.makeText(Login.this, "Некорректные данные", Toast.LENGTH_LONG).show();
                             }
                         });
                     }
@@ -174,6 +177,7 @@ public class Login extends AppCompatActivity {
         intent=new Intent(Login.this,MainActivity.class);
          userRoleId=3;
         startActivity(intent);
+        clear();
     }
     public void SignUp(View view){
         Intent intent=new Intent(this,Registration.class);
@@ -240,5 +244,9 @@ public class Login extends AppCompatActivity {
 
             }
         });
+    }
+    private void clear(){
+        login.setText(null);
+        password.setText(null);
     }
 }
