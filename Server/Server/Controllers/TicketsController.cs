@@ -38,6 +38,8 @@ namespace Server.Controllers
                              Date=s.StartTime.ToString("dd MMMM"),
                              Time=s.StartTime.ToString("HH:mm"),
                              Name =f.Name,
+                             FilmId=f.Id.ToString(),
+                             EndTime=s.EndTime.ToString("yyyy-MM-dd HH:mm"),
                              Cinema=c.Name+" "+c.Adress,
                              Hall=h.Name
                           }).Distinct());

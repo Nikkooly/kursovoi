@@ -13,5 +13,7 @@ namespace Server.Models
         public string Name { get; set; }
         public string Cinema { get; set; }
         public string Hall { get; set; }
+        public string EndTime { get; set; }
+        public string FilmId { get; set; }
     }
 }

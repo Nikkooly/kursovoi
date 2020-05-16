@@ -25,13 +25,35 @@ namespace Server.Controllers
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            return JsonConvert.SerializeObject(cinemaContext.Rating.Where(u => u.FilmId.ToString().Equals(id)).Select(s => s.Review));
+                return JsonConvert.SerializeObject(cinemaContext.Rating.Where(u => u.FilmId.ToString().Equals(id)).Select(s => new LoadReviews { Review=s.Review }));
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public string Post([FromBody]Rating value)
         {
+            if(!cinemaContext.Rating.Any(u=>u.FilmId.Equals(value.FilmId) & u.UserId.Equals(value.UserId))){
+                Rating rating = new Rating();
+                rating.Id = Guid.NewGuid();
+                rating.UserId = value.UserId;
+                rating.FilmId = value.FilmId;
+                rating.Rating1 = value.Rating1;
+                rating.Review = value.Review;
+                try
+                {
+                    cinemaContext.Add(rating);
+                    cinemaContext.SaveChanges();
+                    return JsonConvert.SerializeObject("Отзыв успешно оставлен");
+                }
+                catch (Exception ex)
+                {
+                    return JsonConvert.SerializeObject(ex.Message);
+                }
+            }
+            else
+            {
+                return "No";
+            }
         }
 
         // PUT api/<controller>/5

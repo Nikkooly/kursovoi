@@ -23,7 +23,7 @@ namespace Server.Controllers
                 UserData user = new UserData();  
                 user.Login = value.Login;
                 user.Email = value.Email;
-                user.Password = value.Password;//.GetHashCode().ToString();
+                user.Password = value.Password;
                 user.RoleId = value.RoleId;
                 user.Id = Guid.NewGuid();
                 try

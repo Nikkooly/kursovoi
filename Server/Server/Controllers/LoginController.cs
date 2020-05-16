@@ -30,11 +30,11 @@ namespace Server.Controllers
                    
                     if (login.Equals(userData.Login) && password.Equals(userData.Password.ToString()))
                     {
-                        return JsonConvert.SerializeObject(cinemaContext.UserData.Where(u=> u.Login.Equals(value.Login) & u.Password.Equals(value.Password.ToString())).Select(s=> new { s.RoleId, s.Id,s.Email,s.Login }));
+                        return JsonConvert.SerializeObject(cinemaContext.UserData.Where(u=> u.Login.Equals(value.Login) & u.Password.Equals(password)).Select(s=> new { s.RoleId, s.Id,s.Email,s.Login }));
                     }
                     else
                     {
-                        return JsonConvert.SerializeObject(cinemaContext.UserData.Where(u => u.Login.Equals("") & u.Password.Equals("")).Select(s => new { s.RoleId, s.Id, s.Email, s.Login }));
+                        return JsonConvert.SerializeObject(cinemaContext.UserData.Select(s => new UserData() { RoleId=4}));
                     }
                 }
                 catch(Exception ex)
@@ -46,6 +46,7 @@ namespace Server.Controllers
             {
                 return "[]";
             }
+            password = "";
         }
 
        
