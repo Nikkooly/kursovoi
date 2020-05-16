@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:id="@+id/recyclerFragmentTicket"
     android:layout_height="match_parent"
+    android:layout_marginBottom="57dp"
     tools:context=".Fragments.TicketFragment"
     android:orientation="horizontal">
 

@@ -25,8 +25,8 @@
         android:textSize="20sp" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="50dp"
-        android:layout_height="360dp"
+        android:layout_marginTop="100dp"
+        android:layout_height="wrap_content"
         android:id="@+id/LinearRegistration"
         android:layout_below="@+id/textForOne"
         android:orientation="vertical">
@@ -64,17 +64,6 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
-            android:layout_below="@id/LinearRegistration"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:textColor="@color/colorTextView"
-            android:layout_marginLeft="@dimen/MarginEditTextRegistration"
-            android:text="Показать пароль" />
-
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
@@ -84,7 +73,7 @@
             android:background="@drawable/button_drawable"
             android:layout_marginTop="25dp"
             android:text="Регистрация"
-            android:layout_below="@+id/checkBox"
+            android:layout_below="@+id/LinearRegistration"
             android:textAllCaps="false"
             android:textColor="@color/btnColor"
             android:textSize="16sp" />

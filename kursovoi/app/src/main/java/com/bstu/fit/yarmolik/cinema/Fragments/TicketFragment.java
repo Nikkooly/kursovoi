@@ -94,7 +94,9 @@ public class TicketFragment extends Fragment {
                                 dateSeance.get(i),
                                 timeSeance.get(i),
                                 cinema.get(i),
-                                hall.get(i)));
+                                hall.get(i),
+                                filmId.get(i),
+                                endTime.get(i)));
                         }
                         catch (Exception ex){
                             Toast.makeText(getContext(),ex.getMessage()+" Exception",Toast.LENGTH_SHORT).show();

@@ -101,16 +101,6 @@
                     android:textColor="@color/btnColor"
                     android:textSize="16sp" />
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:text="@string/forget_password"
-                    android:textColor="@color/colorTextView"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
             </FrameLayout>
 
         </LinearLayout>

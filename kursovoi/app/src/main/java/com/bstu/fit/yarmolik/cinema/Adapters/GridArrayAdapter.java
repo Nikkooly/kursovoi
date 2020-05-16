@@ -26,13 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GridArrayAdapter extends BaseAdapter {
-    public static Integer counter=0;
+    public static int counter=0;
     private ArrayList<Double> price;
     private ArrayList<Boolean> status;
     private ArrayList<Integer> places;
     private List<Integer> selectedPositions;
     private Context mContext;
-    private Integer pos=0;
 
 
 
@@ -85,7 +84,7 @@ public class GridArrayAdapter extends BaseAdapter {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    pos = Integer.parseInt(((Button) view).getText().toString())-1;
+                   int pos = Integer.parseInt(((Button) view).getText().toString())-1;
                     int selectedIndex = selectedPositions.indexOf(pos);
                         if (!status.get(pos) && selectedIndex > -1) {
                             counter--;
@@ -93,10 +92,10 @@ public class GridArrayAdapter extends BaseAdapter {
                             ((Button) view).setBackgroundColor(Color.rgb(53, 172, 72));
                         } else if (!status.get(pos) && selectedIndex == -1) {
                             if(counter<=6) {
-                            selectedPositions.add(pos+1);
+                            selectedPositions.add(pos);
                             counter++;
                             ((Button) view).setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.titleColor));
-                                selectedIndex=0;
+                                //selectedIndex=0;
                             }
                             else{
                         Toast.makeText(mContext, "Нельзя купить больше 7 билетов одноврменно", Toast.LENGTH_LONG).show();

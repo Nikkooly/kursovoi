@@ -1,6 +1,7 @@
 package com.bstu.fit.yarmolik.cinema.Fragments;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,8 +12,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +26,12 @@ import com.bstu.fit.yarmolik.cinema.R;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
 import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.ReviewResponse;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -43,7 +51,11 @@ public class InfoFilmFragment extends Fragment implements OnFragmentBookListener
     private String idFilmInfo="",posterFilm;
     private IMyApi iMyApi;
     private AutofitTextView nameFilm;
-    Button button;
+    private ArrayList<String> reviewsList;
+    Button button,reviewButton;
+    private Dialog reviews;
+    private List<ListReview> listReviews;
+    private ListView listView;
     private OnFragmentBookListener onFragmentBookListener;
     private CompositeDisposable compositeDisposable;
     @Override
@@ -64,6 +76,13 @@ public class InfoFilmFragment extends Fragment implements OnFragmentBookListener
         View  view =inflater.inflate(R.layout.fragment_info_film, container, false);
         init(view);
         loadFilm(idFilmInfo);
+        loadReview(idFilmInfo);
+        reviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reviews.show();
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,6 +151,12 @@ public class InfoFilmFragment extends Fragment implements OnFragmentBookListener
         idFilmInfo=getArguments().getString("idFilmAdapter");
         compositeDisposable= new CompositeDisposable();
         button=view.findViewById(R.id.bookTicket);
+        reviewsList=new ArrayList<>();
+        reviewButton=view.findViewById(R.id.button4);
+        reviews=new Dialog(Objects.requireNonNull(getActivity()));
+        reviews.setContentView(R.layout.activity_list);
+        listView=reviews.findViewById(R.id.listReviews);
+        listReviews=new ArrayList<>();
     }
     private void loadFilm(String id){
         AlertDialog alertDialog = new SpotsDialog.Builder()
@@ -159,4 +184,42 @@ public class InfoFilmFragment extends Fragment implements OnFragmentBookListener
             }
         });
     }
+    private void loadReview(String id){
+        Call<List<ReviewResponse>> call =iMyApi.getReviews(id);
+        call.enqueue(new Callback<List<ReviewResponse>>() {
+            @Override
+            public void onResponse(Call<List<ReviewResponse>> call, Response<List<ReviewResponse>> response) {
+                for(ReviewResponse reviewResponse : response.body()){
+                    if(!reviewResponse.equals("[]")){
+                        reviewsList.add(reviewResponse.getReview());
+                            for(int i=0;i<reviewsList.size();i++) {
+                                listReviews.add(new ListReview(reviewsList.get(0)));
+                            }
+                        final Dialog dialog = new Dialog(getActivity());
+                        // dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setCancelable(false);
+                        dialog.setContentView(R.layout.activity_list);
+                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getContext(),R.layout.custom_list, R.id.textViewTeam, reviewsList);
+                        listView.setAdapter(arrayAdapter);
+                        /*ArrayAdapter<String> adapter = new ArrayAdapter(getContext(),
+                                android.R.layout.simple_list_item_1, reviewsList);
+                        // устанавливаем для списка адаптер
+                        listView.setAdapter(adapter);*/
+
+                    }
+                    else
+                    {
+                        Toast.makeText(getContext(),"Нет отзывов", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ReviewResponse>> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 }

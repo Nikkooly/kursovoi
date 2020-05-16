@@ -75,7 +75,7 @@ public class Login extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
         initViews();
-        getGuestInfo(3);
+
         new CountDownTimer(3000, 1000) {
 
             @Override
@@ -123,7 +123,7 @@ public class Login extends AppCompatActivity {
                                 .setContext(Login.this)
                                 .build();
                         alertDialog.show();
-                        LoginUser user = new LoginUser(login.getText().toString(), password.getText().toString());
+                        LoginUser user = new LoginUser(login.getText().toString(), Registration.md5(password.getText().toString()));
                         Call<List<UserResponce>> call = iMyApi.checkLogin(user);
                         call.enqueue(new Callback<List<UserResponce>>() {
                             @Override
@@ -133,28 +133,29 @@ public class Login extends AppCompatActivity {
                                         //Toast.makeText(Login.this, userResponce.toString(), Toast.LENGTH_LONG).show();
                                         userId = userResponce.getId();
                                         userRoleId = userResponce.getRoleId();
-                                        userEmail=userResponce.getEmail();
-                                        userLogin=userResponce.getLogin();
+                                        userEmail = userResponce.getEmail();
+                                        userLogin = userResponce.getLogin();
                                         //Toast.makeText(Login.this, userRoleId.toString(), Toast.LENGTH_LONG).show();
-                                        if(userRoleId==1){
+                                        if (userRoleId == 1) {
                                             alertDialog.dismiss();
                                             //Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
                                             intent = new Intent(Login.this, MainActivity.class);
-                                            intent.putExtra("stateInternetConnection",stateInternet);
+                                            intent.putExtra("stateInternetConnection", stateInternet);
                                             startActivity(intent);
                                             clear();
-                                        }
-                                        else if(userRoleId==2){
+                                        } else if (userRoleId == 2) {
                                             alertDialog.dismiss();
                                             intent = new Intent(Login.this, ManagerActivity.class);
                                             startActivity(intent);
                                             clear();
                                         }
-                                        else{
+                                        else if (userRoleId == 4) {
                                             alertDialog.dismiss();
-                                            Toast.makeText(Login.this, "Некорректные данные", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(Login.this, "Неверный логин или пароль. Проверьте введенные данные!", Toast.LENGTH_LONG).show();
+                                            userRoleId=0;
                                         }
                                     }
+
                             }
 
                             @Override
@@ -174,8 +175,9 @@ public class Login extends AppCompatActivity {
         });
     }
     public void Skip(View view){
-        intent=new Intent(Login.this,MainActivity.class);
          userRoleId=3;
+        getGuestInfo(3);
+        intent=new Intent(Login.this,MainActivity.class);
         startActivity(intent);
         clear();
     }
@@ -233,9 +235,9 @@ public class Login extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<GuestResponse>> call, Response<List<GuestResponse>> response) {
                 for(GuestResponse guestResponse:response.body()){
-                    guestId=guestResponse.getId();
-                    guestLogin=guestResponse.getLogin();
-                    guestEmail=guestResponse.getEmail();
+                    userId=guestResponse.getId();
+                    userLogin=guestResponse.getLogin();
+                    userEmail=guestResponse.getEmail();
                 }
             }
 

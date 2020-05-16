@@ -83,7 +83,8 @@ private List<TicketResponse> ticketResponseArrayList;
             public void onClick(View view) {
                 if (adapter.getSelectedPositions().size() > 0) {
                     for(int i=0;i<adapter.getSelectedPositions().size();i++){
-                        idTicketsListSelectByUser.add(adapter.getSelectedPositions().get(i).toString());
+                        Integer poss=adapter.getSelectedPositions().get(i)+1;
+                        idTicketsListSelectByUser.add(poss.toString());
                         //Toast.makeText(SelectTickets.this, idTicketsList.get(adapter.getSelectedPositions().get(i)), Toast.LENGTH_LONG).show();
                     }
                     Intent intent = new Intent(SelectTickets.this,TicketInfo.class);

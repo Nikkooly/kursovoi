@@ -33,7 +33,10 @@ import com.bstu.fit.yarmolik.cinema.Responces.PlacesResponse;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,6 +53,9 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     private Fragment context;
     private IMyApi iMyApi;
     private CompositeDisposable compositeDisposable=new CompositeDisposable();
+    private Date date=new Date();
+    private SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
 
     private String idSeance,idUser;
     public TicketAdapter(ArrayList<TicketModel> ticketModels,Fragment context) { list=ticketModels; this.context=context;
@@ -116,8 +122,8 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
                 @Override
                 public void onClick(View view) {
                     if(!reviewText.getText().toString().equals("") && !valueFloat.equals(Float.valueOf(0))) {
-                        Toast.makeText(view.getContext(), reviewText.getText().toString(), Toast.LENGTH_SHORT).show();
-                        postReview();
+                        //Toast.makeText(view.getContext(), reviewText.getText().toString(), Toast.LENGTH_SHORT).show();
+                        postReview(filmId,Login.userId,reviewText.getText().toString(),valueFloat,review.getContext());
                     }
                     else{
                         Toast.makeText(view.getContext(), "Заполните данные!", Toast.LENGTH_SHORT).show();
@@ -171,12 +177,26 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
 
             }
         });
-        holder.reviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.openReview(list.get(position).);
-            }
-        });
+        try {
+            Date endDate= simpleDateFormat.parse(list.get(position).getEndTime());
+            String s=simpleDateFormat.format(date);
+            Date currentDate=simpleDateFormat.parse(s);
+           if(currentDate.after(endDate)){
+               holder.reviewButton.setVisibility(View.VISIBLE);
+               holder.reviewButton.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View view) {
+                       holder.openReview(list.get(position).getFilmId());
+                   }
+               });
+           }
+           else{
+               holder.reviewButton.setVisibility(View.GONE);
+           }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -195,7 +215,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
                     Toast.makeText(context, "Отзыв успешно оставлен", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(context, "Произошла ошибка. Приносим свои извинения", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Вы уже оставили отзыв на этот фильм!", Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Consumer<Throwable>() {
