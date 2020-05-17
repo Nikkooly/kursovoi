@@ -23,6 +23,7 @@ import com.bstu.fit.yarmolik.cinema.Responces.SeanceDateResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.SeanceInfo;
 import com.bstu.fit.yarmolik.cinema.Responces.TicketInfoData;
 import com.bstu.fit.yarmolik.cinema.Responces.TicketResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.TicketStaticResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.UserResponce;
 import com.bstu.fit.yarmolik.cinema.Responces.UserTicket;
 

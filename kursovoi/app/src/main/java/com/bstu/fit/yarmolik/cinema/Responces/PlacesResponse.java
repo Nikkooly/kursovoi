@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class PlacesResponse {
     public Integer Place;
+    public String Id;
 
     public Integer getPlace() {
         return Place;
@@ -11,5 +12,13 @@ public class PlacesResponse {
 
     public void setPlace(Integer place) {
         Place = place;
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
     }
 }

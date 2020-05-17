@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -25,6 +27,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.bstu.fit.yarmolik.cinema.Fragments.MainActivity;
+import com.bstu.fit.yarmolik.cinema.LocalDataBase.DbHelper;
+import com.bstu.fit.yarmolik.cinema.LocalDataBase.WorksWithDb;
 import com.bstu.fit.yarmolik.cinema.Manager.ManagerActivity;
 import com.bstu.fit.yarmolik.cinema.Model.LoginUser;
 import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
@@ -59,9 +63,14 @@ public class Login extends AppCompatActivity {
     private RelativeLayout rootView, afterAnimationView;
     IMyApi iMyApi;
     public static Integer userRoleId,guestRoleId;
-    public static String userId,guestId,userEmail,guestEmail,userLogin,guestLogin;
+    private DbHelper dbHelper;
+    private String query;
+    private Cursor c;
+    public static String userId="",guestId,userEmail="",guestEmail,userLogin="",guestLogin;
     Intent intent;
+    private WorksWithDb worksWithDb=new WorksWithDb();
     CompositeDisposable compositeDisposable;
+    private SQLiteDatabase database;
     CheckInternetConnection checkInternetConnection;
 
     @Override
@@ -75,6 +84,16 @@ public class Login extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
         initViews();
+        try {
+            dbHelper = new DbHelper(this, "project.db", null, 1);
+            worksWithDb.userRegister(dbHelper);
+            worksWithDb.ticketInfo(dbHelper);
+            worksWithDb.seanceData(dbHelper);
+            database=dbHelper.getWritableDatabase();
+        }
+        catch (Exception ex){
+            Toast.makeText(Login.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
         new CountDownTimer(3000, 1000) {
 
@@ -141,6 +160,7 @@ public class Login extends AppCompatActivity {
                                             //Toast.makeText(Login.this, "Уже заходим...", Toast.LENGTH_LONG).show();
                                             intent = new Intent(Login.this, MainActivity.class);
                                             intent.putExtra("stateInternetConnection", stateInternet);
+                                            chekLocalUser();
                                             startActivity(intent);
                                             clear();
                                         } else if (userRoleId == 2) {
@@ -165,8 +185,31 @@ public class Login extends AppCompatActivity {
                             }
                         });
                     }
-                    else{
-                        Toast.makeText(Login.this, "Нет интернета", Toast.LENGTH_SHORT).show();
+                    else
+                        {
+                            try {
+                                query = "select * from user_data where login=" + "'" + login.getText().toString() + "'" + " and password=" + "'" + Registration.md5(password.getText().toString()) + "'";
+                                c = database.rawQuery(query, null);
+                                c.moveToFirst();
+                                while (!c.isAfterLast()) {
+                                    userId = c.getString(0).toString();
+                                    userLogin = c.getString(1).toString();
+                                    userEmail = c.getString(2).toString();
+                                    c.moveToNext();
+                                }
+                                c.close();
+                                if (!userId.equals("")) {
+                                    intent = new Intent(Login.this, MainActivity.class);
+                                    startActivity(intent);
+                                    clear();
+                                } else {
+                                    Toast.makeText(Login.this, "Неверный логин или пароль. Проверьте введенные данные!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            catch (Exception ex){
+                                Toast.makeText(Login.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        //Toast.makeText(Login.this, "Нет интернета", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(Login.this, "Некорректные данные", Toast.LENGTH_SHORT).show();
@@ -175,15 +218,25 @@ public class Login extends AppCompatActivity {
         });
     }
     public void Skip(View view){
-         userRoleId=3;
-        getGuestInfo(3);
-        intent=new Intent(Login.this,MainActivity.class);
-        startActivity(intent);
-        clear();
+        if(stateInternet) {
+            userRoleId = 3;
+            getGuestInfo(3);
+            intent = new Intent(Login.this, MainActivity.class);
+            startActivity(intent);
+            clear();
+        }
+        else{
+            Toast.makeText(Login.this, "Отсутствует интернет подключение, вход возможен только авторизованным пользователям! ", Toast.LENGTH_SHORT).show();
+        }
     }
     public void SignUp(View view){
-        Intent intent=new Intent(this,Registration.class);
-        startActivity(intent);
+        if(stateInternet) {
+            Intent intent = new Intent(this, Registration.class);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(Login.this, "Регистрация в оффлайн-режиме не доступна! ", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initViews() {
@@ -250,5 +303,24 @@ public class Login extends AppCompatActivity {
     private void clear(){
         login.setText(null);
         password.setText(null);
+    }
+    private void chekLocalUser(){
+        String id="";
+        try {
+            query = "select * from user_data where id=" + "'" + userId + "'";
+            c = database.rawQuery(query, null);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                id = c.getString(0).toString();
+                c.moveToNext();
+            }
+            c.close();
+            if (id.equals("")) {
+                dbHelper.insertUserData(userId,userLogin,userEmail,Registration.md5(password.getText().toString()));
+            }
+        }
+        catch (Exception ex){
+            Toast.makeText(Login.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }

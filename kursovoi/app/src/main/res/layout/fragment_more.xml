@@ -271,7 +271,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/gradient"
-        android:text="Выйти из аккаунта"
+        android:text="Выйти из приложения"
         android:textColor="@color/toolBarTicket"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -8,17 +8,19 @@ public class BoughtTicket {
     public String Date;
     public String StartTime;
     public String EndTime;
+    public String Film;
     public String CinemaInfo;
     public String HallName;
     public String SeanceId;
     public List<String> Place;
 
-    public BoughtTicket(String idUser, String emailUser, String date, String startTime, String endTime, String cinemaInfo, String hallName, String seanceId, List<String> place) {
+    public BoughtTicket(String idUser, String emailUser, String date, String startTime, String endTime, String film, String cinemaInfo, String hallName, String seanceId, List<String> place) {
         IdUser = idUser;
         EmailUser = emailUser;
         Date = date;
         StartTime = startTime;
         EndTime = endTime;
+        Film = film;
         CinemaInfo = cinemaInfo;
         HallName = hallName;
         SeanceId = seanceId;
@@ -96,5 +98,13 @@ public class BoughtTicket {
 
     public void setPlace(List<String> place) {
         Place = place;
+    }
+
+    public String getFilm() {
+        return Film;
+    }
+
+    public void setFilm(String film) {
+        Film = film;
     }
 }

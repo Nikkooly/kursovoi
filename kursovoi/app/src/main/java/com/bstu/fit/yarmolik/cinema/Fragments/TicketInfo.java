@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bstu.fit.yarmolik.cinema.Adapters.SeanceAdapter;
+import com.bstu.fit.yarmolik.cinema.LocalDataBase.DbHelper;
+import com.bstu.fit.yarmolik.cinema.LocalDataBase.WorksWithDb;
 import com.bstu.fit.yarmolik.cinema.Login;
 import com.bstu.fit.yarmolik.cinema.Model.BoughtTicket;
 import com.bstu.fit.yarmolik.cinema.R;
@@ -27,6 +31,8 @@ import com.bstu.fit.yarmolik.cinema.Remote.IMyApi;
 import com.bstu.fit.yarmolik.cinema.Remote.RetrofitClient;
 import com.bstu.fit.yarmolik.cinema.Responces.FilmResponse;
 import com.bstu.fit.yarmolik.cinema.Responces.PlacesNumber;
+import com.bstu.fit.yarmolik.cinema.Responces.PlacesResponse;
+import com.bstu.fit.yarmolik.cinema.Responces.TicketStaticResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -79,11 +85,17 @@ private String seanceId,idFilm,dateFilm;
 private List<FilmResponse> posts;
 private ArrayList<Integer> places;
 private IMyApi iMyApi;
+public String nameFilm="";
 private String date,startTime,endTime,cinemaInfo,hallInfo,count,finalPrice;
 private TextView nameFilmTextView, genreTextView,dateTimeTextView,dateTextView,cinemaInfoTextView,hallNameTextView,priceTextView,countPlacesTextView;
 private ConstraintLayout constraintLayout;
 private EditText emailEditText;
 private Button button;
+private DbHelper dbHelper;
+private String query;
+private Cursor c;
+private WorksWithDb worksWithDb=new WorksWithDb();
+private SQLiteDatabase database;
 private CompositeDisposable compositeDisposable;
 private ImageView imageView,imageView2;
     @Override
@@ -115,6 +127,7 @@ private ImageView imageView,imageView2;
                             date,
                             startTime,
                             endTime,
+                            nameFilmTextView.getText().toString(),
                             cinemaInfo,
                             hallInfo,
                             seanceId,
@@ -133,8 +146,37 @@ private ImageView imageView,imageView2;
                                     alertDialog.dismiss();
                                     Toast.makeText(TicketInfo.this, s, Toast.LENGTH_SHORT).show();
                                     if (!s.equals("No")) {
-                                        Intent intent = new Intent(TicketInfo.this, MainActivity.class);
-                                        startActivity(intent);
+                                        try {
+                                            dbHelper.insertSeance(seanceId, cinemaInfo, hallInfo, nameFilmTextView.getText().toString(), date, startTime, endTime);
+                                            dbHelper.deleteTickets(seanceId,Login.userId);
+                                            Call<List<PlacesResponse>> call = iMyApi.getPlaces(Login.userId, seanceId);
+                                            ArrayList<Integer> loadPlace = new ArrayList<>();
+                                            ArrayList<String> idPlace=new ArrayList<>();
+                                            call.enqueue(new Callback<List<PlacesResponse>>() {
+                                                @Override
+                                                public void onResponse(Call<List<PlacesResponse>> call, Response<List<PlacesResponse>> response) {
+                                                    for (PlacesResponse placesResponse : response.body()) {
+                                                        loadPlace.add((placesResponse.getPlace()));
+                                                        idPlace.add(placesResponse.getId());
+                                                    }
+                                                    for (int i = 0; i < loadPlace.size(); i++) {
+                                                        dbHelper.insertTicket(idPlace.get(i),seanceId,Login.userId,loadPlace.get(i).toString());
+                                                    }
+                                                    Toast.makeText(TicketInfo.this, "Успешно добавлено", Toast.LENGTH_SHORT).show();
+                                                   /* Intent intent = new Intent(TicketInfo.this, MainActivity.class);
+                                                    startActivity(intent);
+                                                    Toast.makeText(TicketInfo.this, s, Toast.LENGTH_SHORT).show();*/
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<List<PlacesResponse>> call, Throwable t) {
+
+                                                }
+                                            });
+                                        }
+                                        catch(Exception ex){
+                                            Toast.makeText(TicketInfo.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
                                     } else {
                                         Toast.makeText(TicketInfo.this, "Непридвиденная ошибка, приносим свои извинения!", Toast.LENGTH_SHORT).show();
                                     }
@@ -190,6 +232,8 @@ private ImageView imageView,imageView2;
         countPlacesTextView.setText(SelectTickets.counter.toString()+" м.");
         compositeDisposable=new CompositeDisposable();
         places=new ArrayList<>();
+        dbHelper = new DbHelper(this, "project.db", null, 1);
+        database=dbHelper.getWritableDatabase();
     }
     private void loadFilms(String id){
         Call<FilmResponse> call=iMyApi.getFilm(id);
@@ -198,6 +242,7 @@ private ImageView imageView,imageView2;
             public void onResponse(Call<FilmResponse> call, Response<FilmResponse> response) {
                 Picasso.get().load(response.body().getPoster().toString()).into(imageView);
                 Picasso.get().load(response.body().getPoster().toString()).into(imageView2);
+                nameFilm=response.body().getName().toString();
                 nameFilmTextView.setText(response.body().getName());
                 genreTextView.setText(response.body().getGenre());
             }

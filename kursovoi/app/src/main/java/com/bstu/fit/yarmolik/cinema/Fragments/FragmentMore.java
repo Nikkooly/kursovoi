@@ -35,10 +35,10 @@ private Button button;
     }
     private void finishActivity() {
 
-            MainActivity mainActivity = new MainActivity();
-            mainActivity.finish();
-            Intent intent=new Intent(getContext(), Login.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intent);
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+        System.exit(0);
     }
 }
