@@ -20,26 +20,33 @@ namespace Server.Controllers
         {
             if (!cinemaContext.UserData.Any(user => user.Login.Equals(value.Login)))
             {
-                UserData user = new UserData();  
-                user.Login = value.Login;
-                user.Email = value.Email;
-                user.Password = value.Password;
-                user.RoleId = value.RoleId;
-                user.Id = Guid.NewGuid();
-                try
+                if (!cinemaContext.UserData.Any(user => user.Email.Equals(value.Email)))
                 {
-                    cinemaContext.Add(user);
-                    cinemaContext.SaveChanges();
-                    return JsonConvert.SerializeObject("Register Succesfully");
+                    Guid idUser = Guid.NewGuid();
+                    UserData user = new UserData();
+                    user.Login = value.Login;
+                    user.Email = value.Email;
+                    user.Password = value.Password;
+                    user.RoleId = value.RoleId;
+                    user.Id = idUser;
+                    try
+                    {
+                        cinemaContext.Add(user);
+                        cinemaContext.SaveChanges();
+                        return idUser.ToString();
+                    }
+                    catch (Exception ex)
+                    {
+                        return JsonConvert.SerializeObject(ex.Message);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    return JsonConvert.SerializeObject(ex.Message);
+                else{
+                    return "Email exists";
                 }
             }
             else
             {
-                return JsonConvert.SerializeObject("User exists");
+                return "User exists";
 
             }
         }

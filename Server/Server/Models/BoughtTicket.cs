@@ -10,6 +10,7 @@ namespace Server.Models
         public Guid IdUser { get; set; }
         public string EmailUser { get; set; }
         public string Date { get; set; }
+        public string Film { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
         public string CinemaInfo { get; set; }

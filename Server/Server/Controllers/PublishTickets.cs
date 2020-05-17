@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Server.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,6 +27,7 @@ namespace Server.Controllers
         [HttpPost]
         public string Post([FromBody]BoughtTicket value)
         {
+            List<string> idTickets = new List<string>();
             List<int> placesId=new List<int>();
             for(int i = 0; i < value.Place.Count(); i++)
             {
@@ -42,12 +45,14 @@ namespace Server.Controllers
                     {
                         if (!cinemaContext.Tickets.Any(u=> u.Place.Equals(placesId.ElementAt(i)) && u.SeanceId.Equals(value.SeanceId))) //TicketId.Equals(placesId.ElementAt(i))))
                         {
-                            tickets.Id = Guid.NewGuid();
+                            Guid id = Guid.NewGuid();
+                            tickets.Id =id;
                             tickets.SeanceId = value.SeanceId;
                             tickets.UserId = value.IdUser;
                             tickets.Place = placesId.ElementAt(i);                           
                             cinemaContext.Add(tickets);
                             cinemaContext.SaveChanges();
+                            idTickets.Add(id.ToString());
                         }
                         else
                         {
@@ -61,7 +66,7 @@ namespace Server.Controllers
                     transaction.Commit();
                     status = true;
                     
-                    SendEmailAsync(value.EmailUser, value.CinemaInfo, value.HallName, value.Date, value.StartTime, value.EndTime,stringBuilder.ToString()).GetAwaiter();
+                    SendEmailAsync(value.EmailUser, value.CinemaInfo, value.HallName,value.Film, value.Date, value.StartTime, value.EndTime,stringBuilder.ToString()).GetAwaiter();
                   
                 }
                 catch (Exception ex)
@@ -74,20 +79,20 @@ namespace Server.Controllers
                 }
                 else
                 {
-                    return "No";
+                   return "No";
                 }
             }
         }
 
 
-        private static async Task SendEmailAsync(string toUser, string cinema,string hall,string date,string startTime,string EndTime, string places)
+        private static async Task SendEmailAsync(string toUser, string cinema,string hall,string film, string date,string startTime,string EndTime, string places)
         {
 
             MailAddress from = new MailAddress("MagnifisentCinema@yandex.ru", "Magnifisent cinema");
             MailAddress to = new MailAddress(toUser);
             MailMessage m = new MailMessage(from, to);
             m.Subject = "Покупка билета";
-            m.Body = $"Спасибо за покупку билетов в нашем кинотеатре. Информация по билету:<br> Кинотеатр: {cinema}  <br> Зал: {hall} <br> Дата: {date} <br> Начало сеанса: {startTime} <br> Конец сеанса: {EndTime}  <br> Места: {places} <br> QR код находится во вложении письма";
+            m.Body = $"Спасибо за покупку билетов в нашем кинотеатре. Информация по билету:<br> Кинотеатр: {cinema}  <br> Зал: {hall} <br> Фильм: {film} <br> Дата: {date} <br> Начало сеанса: {startTime} <br> Конец сеанса: {EndTime}  <br> Места: {places} <br> QR код находится во вложении письма";
             m.IsBodyHtml = true;
             m.Attachments.Add(new Attachment("F:/kursovoi/images/qr-code.png"));
             SmtpClient smtp = new SmtpClient("smtp.yandex.by", 587);
